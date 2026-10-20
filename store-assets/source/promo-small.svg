@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="280" viewBox="0 0 440 280">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07101F"/><stop offset="1" stop-color="#172554"/></linearGradient><linearGradient id="mark" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2F7BFF"/><stop offset="1" stop-color="#5946E8"/></linearGradient></defs>
+  <rect width="440" height="280" fill="url(#bg)"/>
+  <circle cx="220" cy="126" r="78" fill="#0A1630" opacity=".62"/>
+  <rect x="150" y="48" width="140" height="140" rx="38" fill="url(#mark)"/>
+  <path d="M177 81h86a15 15 0 0 1 15 15v45a15 15 0 0 1-15 15h-34l-20 16v-16h-32a15 15 0 0 1-15-15V96a15 15 0 0 1 15-15Z" fill="#FFF"/>
+  <g fill="url(#mark)"><rect x="178" y="111" width="5" height="16" rx="2.5"/><rect x="188" y="100" width="5" height="38" rx="2.5"/><rect x="198" y="107" width="5" height="24" rx="2.5"/><rect x="208" y="96" width="5" height="46" rx="2.5"/><rect x="224" y="103" width="40" height="6" rx="3"/><rect x="224" y="117" width="33" height="6" rx="3"/><rect x="224" y="131" width="24" height="6" rx="3"/></g>
+  <text x="220" y="224" fill="#F8FAFC" font-family="Segoe UI,Arial" font-size="27" font-weight="750" text-anchor="middle">Skip the Yap!</text>
+  <text x="220" y="252" fill="#B8C6DA" font-family="Segoe UI,Arial" font-size="14" text-anchor="middle">Let them yap. You get the point.</text>
+</svg>

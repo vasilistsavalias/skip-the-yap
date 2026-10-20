@@ -1,0 +1,23 @@
+{
+  "name": "skip-the-yap-extension",
+  "version": "1.0.1",
+  "private": true,
+  "description": "Turn Messenger and Instagram voice notes into readable transcripts or quick summaries.",
+  "license": "MIT",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "check": "npm run lint && npm test && npm run build",
+    "lint": "eslint src tests tools eslint.config.mjs",
+    "package": "node tools/package.mjs",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "archiver": "^8.0.0",
+    "eslint": "^10.13.0",
+    "globals": "^16.4.0",
+    "jsdom": "^27.0.1"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

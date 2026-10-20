@@ -1,0 +1,39 @@
+name: Feature request
+description: Suggest a focused improvement
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is difficult or impossible today?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe the user-visible result rather than an implementation.
+    validations:
+      required: true
+  - type: dropdown
+    id: site
+    attributes:
+      label: Relevant site
+      options:
+        - Messenger
+        - Facebook Messages
+        - Instagram Direct
+        - Provider or model support
+        - Extension popup
+        - Other
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: This request contains no credentials or private communications.
+          required: true

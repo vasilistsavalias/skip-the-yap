@@ -1,0 +1,63 @@
+name: Bug report
+description: Report a reproducible problem with Skip the Yap!
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Never include API keys, private messages, voice recordings, authenticated media URLs, or personal screenshots.
+  - type: dropdown
+    id: site
+    attributes:
+      label: Site
+      options:
+        - Messenger
+        - Facebook Messages
+        - Instagram Direct
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 142
+    validations:
+      required: true
+  - type: input
+    id: provider
+    attributes:
+      label: Provider and model
+      placeholder: Gemini / gemini-2.5-flash
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Use synthetic or redacted examples only.
+      placeholder: |
+        1. Open a supported conversation
+        2. Select the transcription control
+        3. Observe...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include the exact visible error, with sensitive information removed.
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I removed credentials, personal communications, private audio, and authenticated URLs.
+          required: true

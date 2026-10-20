@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Skip the Yap!</title>
+  <desc id="desc">A voice waveform changing into readable text inside a speech bubble.</desc>
+  <defs>
+    <linearGradient id="surface" x1="64" y1="48" x2="448" y2="464" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2F7BFF"/>
+      <stop offset="1" stop-color="#5946E8"/>
+    </linearGradient>
+  </defs>
+  <rect x="32" y="32" width="448" height="448" rx="112" fill="url(#surface)"/>
+  <path d="M112 128h288a48 48 0 0 1 48 48v144a48 48 0 0 1-48 48H286l-62 52v-52H112a48 48 0 0 1-48-48V176a48 48 0 0 1 48-48Z" fill="#FFF"/>
+  <g fill="url(#surface)">
+    <rect x="116" y="230" width="18" height="52" rx="9"/>
+    <rect x="148" y="194" width="18" height="124" rx="9"/>
+    <rect x="180" y="216" width="18" height="80" rx="9"/>
+    <rect x="212" y="180" width="18" height="152" rx="9"/>
+    <rect x="262" y="202" width="134" height="20" rx="10"/>
+    <rect x="262" y="246" width="110" height="20" rx="10"/>
+    <rect x="262" y="290" width="78" height="20" rx="10"/>
+  </g>
+</svg>

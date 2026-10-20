@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="color-scheme" content="light dark">
+  <title>Skip the Yap!</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="header-brand">
+        <img class="header-icon" src="../assets/icons/icon32.png" alt="">
+        <div class="header-titles">
+          <h1>Skip the Yap!</h1>
+          <span class="version-tag">v1.0</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <button type="button" class="tour-info-btn" id="startTourBtn" title="Show Tour & Guide" aria-label="Open help tour">ℹ️</button>
+        <div class="status-indicator needs-setup" id="statusIndicator">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span class="status-text">Needs setup</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- API Provider Section -->
+    <section class="section api-section">
+      <div class="section-header">
+        <label for="primaryProvider">Transcription provider</label>
+        <span class="provider-tier-badge" id="providerTierBadge">Free tier</span>
+      </div>
+
+      <select id="primaryProvider" class="provider-mode-select" aria-label="Primary transcription provider">
+        <optgroup label="FREE TIER / FREE CREDITS">
+          <option value="gemini" selected>Gemini — all modes</option>
+          <option value="groq">Groq — fast Whisper</option>
+          <option value="huggingface">Hugging Face — limited credits</option>
+          <option value="elevenlabs">ElevenLabs — limited credits</option>
+        </optgroup>
+        <optgroup label="PAID — PAY AS YOU GO">
+          <option value="openai">OpenAI — high accuracy</option>
+          <option value="xai">xAI — low-cost speech-to-text</option>
+          <option value="openrouter">OpenRouter — multiple models</option>
+        </optgroup>
+      </select>
+
+      <div class="provider-key">
+        <div class="provider-key-header"><label for="providerApiKey" id="providerKeyLabel">Gemini API key</label><span id="providerCapability">All modes</span></div>
+        <div class="input-with-button">
+          <input type="password" id="providerApiKey" placeholder="Paste Gemini key…" spellcheck="false" autocomplete="off">
+          <button type="button" id="toggleVisibilityBtn" title="Show API key" aria-label="Show Gemini API key" class="icon-btn">👁️</button>
+        </div>
+        <div id="apiStatusPill" class="status-pill info" role="status" aria-live="polite"><span class="pill-icon">ℹ️</span><span class="pill-text">Not configured</span></div>
+        <button type="button" class="connection-test-btn" id="testApiKeyBtn">Test Gemini</button>
+      </div>
+
+      <p class="provider-note" id="providerNote"></p>
+
+      <button type="button" class="guide-toggle-btn" id="toggleGuideBtn" aria-expanded="false" aria-controls="guideAccordion">How to get a Gemini API key <span>▾</span></button>
+      <div id="guideAccordion" class="guide-accordion collapsed" aria-hidden="true" inert>
+        <div class="guide-content">
+          <ol class="guide-steps" id="guideSteps"></ol>
+          <a id="guideLink" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" class="guide-action">Open Google AI Studio ↗</a>
+        </div>
+      </div>
+
+      <p class="privacy-note">Keys stay in Chrome's local extension storage. Audio is sent only to providers you configure when you click Transcribe.</p>
+    </section>
+
+    <!-- Mode Presets -->
+    <section class="section mode-section">
+      <h2 class="section-label" id="modeHeading">Transcription Mode</h2>
+      <div class="mode-cards" role="radiogroup" aria-labelledby="modeHeading">
+        <label class="mode-card active" data-mode="verbatim">
+          <input type="radio" name="transcribeMode" value="verbatim" checked>
+          <span class="mode-icon" aria-hidden="true">🎯</span>
+          <div class="mode-content">
+            <div class="mode-top">
+              <span class="mode-title">Verbatim</span>
+              <span class="mode-badge">Default</span>
+            </div>
+            <div class="mode-desc">Exact wording, including slang and filler.</div>
+          </div>
+          <span class="mode-choice" aria-hidden="true"></span>
+        </label>
+
+        <label class="mode-card" data-mode="clean">
+          <input type="radio" name="transcribeMode" value="clean">
+          <span class="mode-icon" aria-hidden="true">✨</span>
+          <div class="mode-content">
+            <div class="mode-top">
+              <span class="mode-title">Cleaned</span>
+            </div>
+            <div class="mode-desc">Removes stutters and filler; improves punctuation.</div>
+          </div>
+          <span class="mode-choice" aria-hidden="true"></span>
+        </label>
+
+        <label class="mode-card" data-mode="summary">
+          <input type="radio" name="transcribeMode" value="summary">
+          <span class="mode-icon" aria-hidden="true">📝</span>
+          <div class="mode-content">
+            <div class="mode-top">
+              <span class="mode-title">TL;DR</span>
+            </div>
+            <div class="mode-desc">Summarizes key points and requests in 1–3 bullets.</div>
+          </div>
+          <span class="mode-choice" aria-hidden="true"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Preferences -->
+    <section class="section prefs-section">
+      <h2 class="section-label">Workflow Automation</h2>
+      <div class="pref-row">
+        <div class="pref-info">
+          <span class="pref-title">Also copy to clipboard</span>
+          <span class="pref-desc">Enabled by default; turn off for chat-only insertion</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="autoCopyClipboard" aria-label="Automatically copy transcript to clipboard" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Advanced fallback -->
+    <section class="section advanced-section">
+      <div class="dev-mode-bar">
+        <div class="dev-mode-title-wrap">
+          <span class="dev-icon">↪</span>
+          <div class="dev-text">
+            <span class="dev-title">Advanced fallback</span>
+            <span class="dev-subtitle">Try another provider when one is unavailable</span>
+          </div>
+        </div>
+        <label class="switch small-switch" title="Enable provider fallback">
+          <input type="checkbox" id="fallbackEnabled" aria-label="Enable provider fallback" aria-expanded="false" aria-controls="fallbackContent">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div id="fallbackContent" class="dev-content collapsed" aria-hidden="true" inert>
+        <div id="routingList" class="routing-list"></div>
+        <div class="add-provider-row">
+          <select id="fallbackProviderSelect" aria-label="Fallback provider"></select>
+          <button type="button" id="addFallbackBtn">＋ Add</button>
+        </div>
+        <p class="field-hint">Providers and their checked models are tried from top to bottom. Authentication failures move to the next configured provider.</p>
+
+        <div class="form-item prompt-override">
+          <div class="form-item-header">
+            <label for="customPrompt">System prompt override</label>
+            <button type="button" class="reset-prompt-btn" id="resetPromptBtn">Reset</button>
+          </div>
+          <textarea id="customPrompt" rows="3" placeholder="Leave empty to use the selected transcription mode"></textarea>
+          <span class="field-hint">Only providers marked “All modes” can apply Cleaned, TL;DR, or a custom prompt.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="popup-footer">
+      <div class="save-status" id="saveStatus">All changes saved automatically ✓</div>
+      <button type="button" class="clear-data-btn" id="clearDataBtn">Clear saved key and settings</button>
+    </footer>
+
+    <!-- Interactive Tour Modal -->
+    <div id="tourModal" class="tour-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="tourTitle" hidden>
+      <div class="tour-modal-card">
+        <button type="button" class="tour-close-btn" id="tourCloseBtn" title="Close Tour" aria-label="Close tour">✕</button>
+
+        <div class="tour-slides-wrap">
+          <!-- Slide 1 -->
+          <div class="tour-slide active" data-slide="0">
+            <div class="tour-step-pill">Step 1 of 3</div>
+            <div class="tour-illustration">🎙️ ⚡</div>
+            <h2 class="tour-title" id="tourTitle">Voice Notes to Text</h2>
+            <p class="tour-desc">When you click Transcribe, the selected voice note is sent to your configured provider and returned as text. Supports Greek, English, and informal slang.</p>
+          </div>
+
+          <!-- Slide 2 -->
+          <div class="tour-slide" data-slide="1">
+            <div class="tour-step-pill">Step 2 of 3</div>
+            <div class="tour-mockup-bubble">
+              <span class="mock-play">▶</span>
+              <span class="mock-time">0:17</span>
+              <span class="mock-btn">Transcribe</span>
+            </div>
+            <h2 class="tour-title">1-Click Transcription</h2>
+            <p class="tour-desc">Click the blue microphone button beside any voice message. Your selected provider converts the speech into text.</p>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="tour-slide" data-slide="2">
+            <div class="tour-step-pill">Step 3 of 3</div>
+            <div class="tour-illustration">💬 🎯 📝</div>
+            <h2 class="tour-title">Inserted Automatically</h2>
+            <p class="tour-desc">The finished transcript goes straight into the active chat box. Choose <strong>Verbatim</strong>, <strong>Cleaned</strong>, or <strong>TL;DR</strong> when supported by your provider.</p>
+          </div>
+        </div>
+
+        <!-- Tour Footer -->
+        <div class="tour-footer">
+          <div class="tour-dots">
+            <button type="button" class="tour-dot active" data-dot="0" aria-label="Show tour step 1" aria-current="step"></button>
+            <button type="button" class="tour-dot" data-dot="1" aria-label="Show tour step 2"></button>
+            <button type="button" class="tour-dot" data-dot="2" aria-label="Show tour step 3"></button>
+          </div>
+          <div class="tour-actions">
+            <button type="button" class="tour-nav-btn secondary" id="tourPrevBtn" style="display: none;">Back</button>
+            <button type="button" class="tour-nav-btn primary" id="tourNextBtn">Next ➔</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../shared/core.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
