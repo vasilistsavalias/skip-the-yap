@@ -14,10 +14,11 @@
         <img class="header-icon" src="../assets/icons/icon32.png" alt="">
         <div class="header-titles">
           <h1>Skip the Yap!</h1>
-          <span class="version-tag">v1.0</span>
+          <span class="version-tag" id="versionTag">v&mdash;</span>
         </div>
       </div>
       <div class="header-right">
+        <button type="button" class="release-notes-btn" id="releaseNotesBtn" title="What's new" aria-label="View what's new">&#10024;</button>
         <button type="button" class="tour-info-btn" id="startTourBtn" title="Show Tour & Guide" aria-label="Open help tour">ℹ️</button>
         <div class="status-indicator needs-setup" id="statusIndicator">
           <span class="status-dot" aria-hidden="true"></span>
@@ -168,6 +169,33 @@
       <div class="save-status" id="saveStatus">All changes saved automatically ✓</div>
       <button type="button" class="clear-data-btn" id="clearDataBtn">Clear saved key and settings</button>
     </footer>
+
+    <!-- Release Notes Modal -->
+    <div id="releaseNotesModal" class="tour-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="releaseNotesTitle" aria-describedby="releaseNotesSummary" hidden>
+      <div class="tour-modal-card release-notes-card">
+        <button type="button" class="tour-close-btn" id="releaseNotesCloseBtn" title="Close what's new" aria-label="Close what's new">&times;</button>
+
+        <div class="release-notes-content">
+          <div class="release-notes-intro">
+            <div class="release-notes-icon" aria-hidden="true">&#10024;</div>
+            <div class="release-notes-version">Installed <span id="releaseNotesVersion">v&mdash;</span></div>
+            <h2 class="tour-title" id="releaseNotesTitle">What's new</h2>
+            <p class="tour-desc" id="releaseNotesSummary">A couple of fixes to keep voice DMs smooth and predictable.</p>
+          </div>
+
+          <section class="release-entry" aria-labelledby="latestFixesTitle">
+            <h3 id="latestFixesTitle">Latest fixes</h3>
+            <ul class="release-notes-list">
+              <li>Transcription buttons now stay attached to their voice DM while you scroll.</li>
+              <li>Buttons disappear when their voice DM leaves the visible chat.</li>
+              <li>Existing drafts are preserved, and transcripts are inserted only once.</li>
+            </ul>
+          </section>
+
+          <a class="release-notes-link" href="https://github.com/vasilistsavalias/skip-the-yap/releases" target="_blank" rel="noopener noreferrer">View all releases &nearr;</a>
+        </div>
+      </div>
+    </div>
 
     <!-- Interactive Tour Modal -->
     <div id="tourModal" class="tour-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="tourTitle" hidden>

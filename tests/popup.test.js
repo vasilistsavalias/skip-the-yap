@@ -13,7 +13,10 @@ async function loadPopup(initial = {}) {
   const requestedOrigins = [];
   let connectionResult = { success: true };
   dom.window.chrome = {
-    runtime: { sendMessage: async () => connectionResult },
+    runtime: {
+      getManifest: () => ({ version: "9.8.7" }),
+      sendMessage: async () => connectionResult
+    },
     permissions: {
       request: async ({ origins }) => {
         requestedOrigins.push(...origins);
@@ -113,4 +116,18 @@ test("popup tour remains keyboard dismissible", async () => {
   assert.equal(document.getElementById("tourModal").hidden, false);
   document.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
   assert.equal(document.getElementById("tourModal").hidden, true);
+});
+
+test("popup shows the installed version and keyboard-dismissible release notes", async () => {
+  const { dom } = await loadPopup();
+  const document = dom.window.document;
+
+  assert.equal(document.getElementById("versionTag").textContent, "v9.8.7");
+  document.getElementById("releaseNotesBtn").click();
+  assert.equal(document.getElementById("releaseNotesModal").hidden, false);
+  assert.equal(document.getElementById("releaseNotesVersion").textContent, "v9.8.7");
+
+  document.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  assert.equal(document.getElementById("releaseNotesModal").hidden, true);
+  assert.equal(document.activeElement.id, "releaseNotesBtn");
 });

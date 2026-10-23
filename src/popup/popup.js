@@ -25,9 +25,12 @@
   document.addEventListener("DOMContentLoaded", initialize);
 
   function initialize() {
-    for (const id of ["primaryProvider", "providerTierBadge", "providerApiKey", "providerKeyLabel", "providerCapability", "providerNote", "toggleVisibilityBtn", "toggleGuideBtn", "guideAccordion", "guideSteps", "guideLink", "apiStatusPill", "testApiKeyBtn", "statusIndicator", "fallbackEnabled", "fallbackContent", "routingList", "fallbackProviderSelect", "addFallbackBtn", "autoCopyClipboard", "customPrompt", "resetPromptBtn", "startTourBtn", "tourModal", "tourCloseBtn", "tourPrevBtn", "tourNextBtn", "clearDataBtn"]) {
+    for (const id of ["primaryProvider", "providerTierBadge", "providerApiKey", "providerKeyLabel", "providerCapability", "providerNote", "toggleVisibilityBtn", "toggleGuideBtn", "guideAccordion", "guideSteps", "guideLink", "apiStatusPill", "testApiKeyBtn", "statusIndicator", "fallbackEnabled", "fallbackContent", "routingList", "fallbackProviderSelect", "addFallbackBtn", "autoCopyClipboard", "customPrompt", "resetPromptBtn", "versionTag", "releaseNotesBtn", "releaseNotesModal", "releaseNotesCloseBtn", "releaseNotesVersion", "startTourBtn", "tourModal", "tourCloseBtn", "tourPrevBtn", "tourNextBtn", "clearDataBtn"]) {
       elements[id] = document.getElementById(id);
     }
+    const installedVersion = chrome.runtime.getManifest().version;
+    elements.versionTag.textContent = `v${installedVersion}`;
+    elements.releaseNotesVersion.textContent = `v${installedVersion}`;
     bindEvents();
     restoreSettings();
   }
@@ -110,13 +113,15 @@
     elements.autoCopyClipboard.addEventListener("change", () => save({ autoCopyClipboard: elements.autoCopyClipboard.checked }));
     elements.customPrompt.addEventListener("input", () => debounceSave("customPrompt", elements.customPrompt.value.trim()));
     elements.resetPromptBtn.addEventListener("click", () => { elements.customPrompt.value = ""; save({ customPrompt: "" }); });
+    elements.releaseNotesBtn.addEventListener("click", openReleaseNotes);
+    elements.releaseNotesCloseBtn.addEventListener("click", closeReleaseNotes);
     elements.startTourBtn.addEventListener("click", openTour);
     elements.clearDataBtn.addEventListener("click", clearSavedData);
     elements.tourCloseBtn.addEventListener("click", closeTour);
     elements.tourPrevBtn.addEventListener("click", () => showTourSlide(currentTourSlide - 1));
     elements.tourNextBtn.addEventListener("click", () => currentTourSlide === document.querySelectorAll(".tour-slide").length - 1 ? closeTour() : showTourSlide(currentTourSlide + 1));
     document.querySelectorAll(".tour-dot").forEach((dot) => dot.addEventListener("click", () => showTourSlide(Number(dot.dataset.dot))));
-    document.addEventListener("keydown", handleTourKeydown);
+    document.addEventListener("keydown", handleModalKeydown);
   }
 
   function renderProvider() {
@@ -470,26 +475,45 @@
     elements.clearDataBtn.textContent = "Clear saved keys and settings";
   }
 
+  function setModalOpen(modal, trigger, open) {
+    document.querySelectorAll(".popup-container > *").forEach((element) => {
+      element.inert = open && element !== modal;
+    });
+    modal.hidden = !open;
+    if (open) modal.querySelector(".tour-close-btn").focus();
+    else trigger.focus();
+  }
+
+  function openReleaseNotes() {
+    setModalOpen(elements.releaseNotesModal, elements.releaseNotesBtn, true);
+  }
+
+  function closeReleaseNotes() {
+    setModalOpen(elements.releaseNotesModal, elements.releaseNotesBtn, false);
+  }
+
   function openTour() {
-    document.querySelectorAll(".popup-container > :not(#tourModal)").forEach((element) => { element.inert = true; });
     showTourSlide(0);
-    elements.tourModal.hidden = false;
-    elements.tourCloseBtn.focus();
+    setModalOpen(elements.tourModal, elements.startTourBtn, true);
     save({ hasSeenTour: true });
   }
 
   function closeTour() {
-    elements.tourModal.hidden = true;
-    document.querySelectorAll(".popup-container > :not(#tourModal)").forEach((element) => { element.inert = false; });
-    elements.startTourBtn.focus();
+    setModalOpen(elements.tourModal, elements.startTourBtn, false);
   }
 
-  function handleTourKeydown(event) {
-    if (elements.tourModal.hidden) return;
-    if (event.key === "Escape") { event.preventDefault(); closeTour(); return; }
+  function handleModalKeydown(event) {
+    const modal = [elements.releaseNotesModal, elements.tourModal].find((candidate) => !candidate.hidden);
+    if (!modal) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      if (modal === elements.releaseNotesModal) closeReleaseNotes();
+      else closeTour();
+      return;
+    }
     if (event.key !== "Tab") return;
-    const focusable = [...elements.tourModal.querySelectorAll("button:not([disabled])")]
-      .filter((button) => button.offsetParent !== null || button === document.activeElement);
+    const focusable = [...modal.querySelectorAll("button:not([disabled]), a[href]")]
+      .filter((element) => element.offsetParent !== null || element === document.activeElement);
     if (!focusable.length) return;
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
