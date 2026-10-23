@@ -113,6 +113,42 @@
     return fallback;
   }
 
+  function isVisibleWithinClippingAncestors(element, viewportWidth, viewportHeight) {
+    if (!element) return false;
+    const rect = element.getBoundingClientRect?.();
+    if (!rect || rect.width <= 0 || rect.height <= 0) return false;
+
+    let visibleLeft = 0;
+    let visibleTop = 0;
+    let visibleRight = viewportWidth;
+    let visibleBottom = viewportHeight;
+    const view = element.ownerDocument?.defaultView;
+    const clips = (value) => /^(auto|clip|hidden|scroll)$/i.test(value || "");
+
+    for (let ancestor = element.parentElement;
+      ancestor && ancestor !== element.ownerDocument?.body;
+      ancestor = ancestor.parentElement) {
+      const style = view?.getComputedStyle?.(ancestor);
+      const ancestorRect = ancestor.getBoundingClientRect?.();
+      if (!style || !ancestorRect || ancestorRect.width <= 0 || ancestorRect.height <= 0) continue;
+
+      if (clips(style.overflowX || style.overflow)) {
+        visibleLeft = Math.max(visibleLeft, ancestorRect.left);
+        visibleRight = Math.min(visibleRight, ancestorRect.right);
+      }
+      if (clips(style.overflowY || style.overflow)) {
+        visibleTop = Math.max(visibleTop, ancestorRect.top);
+        visibleBottom = Math.min(visibleBottom, ancestorRect.bottom);
+      }
+    }
+
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    return visibleLeft < visibleRight && visibleTop < visibleBottom &&
+      centerX >= visibleLeft && centerX <= visibleRight &&
+      centerY >= visibleTop && centerY <= visibleBottom;
+  }
+
   function isUsableComposer(element, view) {
     if (!element) return false;
     if (element.hidden || element.getAttribute?.("aria-hidden") === "true") return false;
@@ -204,6 +240,7 @@
     insertTranscript,
     isInstagramDocument,
     isPureVoiceDuration,
+    isVisibleWithinClippingAncestors,
     isVoiceContainer
   };
 });

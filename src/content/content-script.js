@@ -47,15 +47,27 @@
       if (!button.isConnected || !container.isConnected) {
         button.remove();
         buttonAnchors.delete(button);
+        transcribeButtons.delete(container);
+        continue;
+      }
+      if (!contentCore.isVoiceContainer(container)) {
+        button.remove();
+        buttonAnchors.delete(button);
+        transcribeButtons.delete(container);
         continue;
       }
       const anchor = contentCore.findVoiceAnchor(container);
       const rect = anchor.getBoundingClientRect();
+      button.hidden = !contentCore.isVisibleWithinClippingAncestors(
+        anchor,
+        viewportWidth,
+        viewportHeight
+      );
+      if (button.hidden) continue;
       const outgoing = rect.left + rect.width / 2 > viewportWidth / 2;
       const preferredLeft = outgoing ? rect.left - 30 - controlGap : rect.right + controlGap;
       button.style.setProperty("left", `${Math.max(8, Math.min(preferredLeft, viewportWidth - 38))}px`, "important");
       button.style.setProperty("top", `${rect.top + rect.height / 2}px`, "important");
-      button.hidden = rect.bottom < 0 || rect.top > viewportHeight;
     }
 
   }

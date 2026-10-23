@@ -65,6 +65,26 @@ test("resolves nested Instagram controls to one outer voice-note bubble", () => 
   assert.equal(contentCore.findVoiceAnchor(document.getElementById("bubble"))?.id, "bubble");
 });
 
+test("treats a voice note clipped outside its chat scrollport as hidden", () => {
+  const dom = new JSDOM(`
+    <body>
+      <div id="chat" style="overflow-y: hidden">
+        <div id="voice"><button aria-label="Play voice clip">Play</button><span>0:17</span></div>
+      </div>
+    </body>
+  `, { pretendToBeVisual: true });
+  const document = dom.window.document;
+  const chat = document.getElementById("chat");
+  const voice = document.getElementById("voice");
+  chat.getBoundingClientRect = () => ({ left: 100, right: 500, top: 100, bottom: 300, width: 400, height: 200 });
+  voice.getBoundingClientRect = () => ({ left: 140, right: 340, top: 30, bottom: 90, width: 200, height: 60 });
+
+  assert.equal(contentCore.isVisibleWithinClippingAncestors(voice, 800, 600), false);
+
+  voice.getBoundingClientRect = () => ({ left: 140, right: 340, top: 130, bottom: 190, width: 200, height: 60 });
+  assert.equal(contentCore.isVisibleWithinClippingAncestors(voice, 800, 600), true);
+});
+
 test("chooses the chat composer instead of a search textbox", () => {
   const dom = new JSDOM(`
     <body>
@@ -186,5 +206,52 @@ test("mounts a transcription button on an Instagram voice note with an unlabeled
   assert.equal(trigger?.style.left, "383px");
   assert.equal(trigger?.style.top, "155px");
   assert.equal(dom.window.document.querySelectorAll(".vt-transcribe-trigger").length, 1);
+  dom.window.close();
+});
+
+test("hides a Messenger control when its voice note scrolls outside the chat panel", async () => {
+  const dom = new JSDOM(`
+    <body>
+      <div id="chat" style="overflow-y: hidden">
+        <div id="voice"><button aria-label="Play voice clip">Play</button><span>0:17</span></div>
+      </div>
+    </body>
+  `, {
+    runScripts: "outside-only",
+    pretendToBeVisual: true,
+    url: "https://www.messenger.com/t/example"
+  });
+  const document = dom.window.document;
+  const chat = document.getElementById("chat");
+  const voice = document.getElementById("voice");
+  chat.getBoundingClientRect = () => ({ left: 100, right: 500, top: 100, bottom: 300, width: 400, height: 200 });
+  voice.getBoundingClientRect = () => ({ left: 140, right: 340, top: 30, bottom: 90, width: 200, height: 60 });
+  dom.window.chrome = {
+    runtime: {
+      id: "test-extension",
+      onMessage: { addListener: () => {} },
+      sendMessage: async () => ({ success: true })
+    },
+    storage: { local: { get: async () => ({ autoCopyClipboard: false }) } }
+  };
+  dom.window.eval(fs.readFileSync(`${extension}/shared/core.js`, "utf8"));
+  dom.window.eval(fs.readFileSync(`${extension}/content/dom.js`, "utf8"));
+  dom.window.eval(fs.readFileSync(`${extension}/content/content-script.js`, "utf8"));
+
+  const trigger = document.querySelector(".vt-transcribe-trigger");
+  assert.equal(trigger?.hidden, true);
+
+  voice.getBoundingClientRect = () => ({ left: 140, right: 340, top: 130, bottom: 190, width: 200, height: 60 });
+  chat.dispatchEvent(new dom.window.Event("scroll"));
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.equal(trigger?.hidden, false);
+  assert.equal(trigger?.style.top, "160px");
+
+  voice.querySelector("span").remove();
+  chat.dispatchEvent(new dom.window.Event("scroll"));
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.equal(trigger?.isConnected, false);
   dom.window.close();
 });
