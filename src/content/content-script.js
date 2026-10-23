@@ -274,12 +274,13 @@
       copyRequested = false;
     }
 
-    let inserted = false;
+    let composerReady = false;
     for (const delay of [0, 100, 250]) {
       if (delay) await new Promise((resolve) => setTimeout(resolve, delay));
-      inserted = await contentCore.insertTranscript(document, text);
-      if (inserted) break;
+      composerReady = Boolean(contentCore.findComposer(document));
+      if (composerReady) break;
     }
+    const inserted = composerReady && await contentCore.insertTranscript(document, text);
     let copied = false;
     if (copyRequested || !inserted) {
       try {
