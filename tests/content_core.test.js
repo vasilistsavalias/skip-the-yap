@@ -243,15 +243,57 @@ test("hides a Messenger control when its voice note scrolls outside the chat pan
 
   voice.getBoundingClientRect = () => ({ left: 140, right: 340, top: 130, bottom: 190, width: 200, height: 60 });
   chat.dispatchEvent(new dom.window.Event("scroll"));
-  await new Promise((resolve) => setImmediate(resolve));
+  await new Promise((resolve) => dom.window.requestAnimationFrame(resolve));
 
   assert.equal(trigger?.hidden, false);
   assert.equal(trigger?.style.top, "160px");
 
   voice.querySelector("span").remove();
   chat.dispatchEvent(new dom.window.Event("scroll"));
-  await new Promise((resolve) => setImmediate(resolve));
+  await new Promise((resolve) => dom.window.requestAnimationFrame(resolve));
 
   assert.equal(trigger?.isConnected, false);
+  dom.window.close();
+});
+
+test("repositions an Instagram control after wheel-driven virtual scrolling", async () => {
+  const dom = new JSDOM(`
+    <body>
+      <div id="chat" style="overflow-y: hidden">
+        <div id="voice"><button aria-label="Play voice clip">Play</button><span>0:17</span></div>
+      </div>
+    </body>
+  `, {
+    runScripts: "outside-only",
+    pretendToBeVisual: true,
+    url: "https://www.instagram.com/direct/t/example/"
+  });
+  const document = dom.window.document;
+  const chat = document.getElementById("chat");
+  const voice = document.getElementById("voice");
+  chat.getBoundingClientRect = () => ({ left: 100, right: 500, top: 100, bottom: 300, width: 400, height: 200 });
+  voice.getBoundingClientRect = () => ({ left: 140, right: 340, top: 130, bottom: 190, width: 200, height: 60 });
+  dom.window.chrome = {
+    runtime: {
+      id: "test-extension",
+      onMessage: { addListener: () => {} },
+      sendMessage: async () => ({ success: true })
+    },
+    storage: { local: { get: async () => ({ autoCopyClipboard: false }) } }
+  };
+  dom.window.eval(fs.readFileSync(`${extension}/shared/core.js`, "utf8"));
+  dom.window.eval(fs.readFileSync(`${extension}/content/dom.js`, "utf8"));
+  dom.window.eval(fs.readFileSync(`${extension}/content/content-script.js`, "utf8"));
+  await new Promise((resolve) => dom.window.requestAnimationFrame(resolve));
+
+  const trigger = document.querySelector(".vt-transcribe-trigger");
+  assert.equal(trigger?.hidden, false);
+  assert.equal(trigger?.style.top, "160px");
+
+  voice.getBoundingClientRect = () => ({ left: 140, right: 340, top: 30, bottom: 90, width: 200, height: 60 });
+  chat.dispatchEvent(new dom.window.WheelEvent("wheel", { bubbles: true }));
+  await new Promise((resolve) => dom.window.requestAnimationFrame(resolve));
+
+  assert.equal(trigger?.hidden, true);
   dom.window.close();
 });

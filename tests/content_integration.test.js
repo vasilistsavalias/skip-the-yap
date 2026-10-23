@@ -92,6 +92,7 @@ test("a trusted Messenger trigger captures the selected voice note and starts tr
     dom.window.fetch("https://video.xx.fbcdn.net/opaque-selected-audio");
   });
   dom.window.eval(fs.readFileSync(path.join(extension, "content", "content-script.js"), "utf8"));
+  await new Promise((resolve) => dom.window.requestAnimationFrame(resolve));
 
   const trigger = dom.window.document.querySelector(".vt-transcribe-trigger");
   assert.equal(trigger.querySelector(".vt-trigger-icon")?.tagName.toLowerCase(), "svg");

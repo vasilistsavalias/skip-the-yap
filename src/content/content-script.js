@@ -15,7 +15,7 @@
   const transcribeButtons = new WeakMap();
   const activeCancellations = new WeakMap();
   const buttonAnchors = new Map();
-  let positioningControls = false;
+  let positionFrame = 0;
 
   function sendMessage(payload) {
     if (!chrome.runtime?.id) return Promise.reject(new Error("Refresh this tab to reconnect the extension."));
@@ -73,13 +73,11 @@
   }
 
   function scheduleControlPosition() {
-    if (positioningControls) return;
-    positioningControls = true;
-    try {
+    if (positionFrame) return;
+    positionFrame = globalThis.requestAnimationFrame(() => {
+      positionFrame = 0;
       placeVoiceNoteControls();
-    } finally {
-      positioningControls = false;
-    }
+    });
   }
 
   function createTranscriptionIcon() {
@@ -380,6 +378,7 @@
     setTriggerState(button, "idle");
     button.setAttribute("aria-label", "Transcribe voice note");
     button.title = `Transcribe voice note${contentCore.findDuration(container) ? ` (${contentCore.findDuration(container)})` : ""}`;
+    button.hidden = true;
     document.body.append(button);
     buttonAnchors.set(button, container);
     scheduleControlPosition();
@@ -436,9 +435,11 @@
   });
 
   document.addEventListener("scroll", scheduleControlPosition, true);
+  document.addEventListener("wheel", scheduleControlPosition, { capture: true, passive: true });
   globalThis.addEventListener("resize", scheduleControlPosition);
   globalThis.addEventListener("unload", () => {
     observer.disconnect();
+    if (positionFrame) globalThis.cancelAnimationFrame(positionFrame);
     buttonAnchors.clear();
   }, { once: true });
 
