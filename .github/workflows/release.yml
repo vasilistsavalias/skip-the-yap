@@ -18,6 +18,8 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: Verify tag matches extension version
+        run: node -e "const version = require('./src/manifest.json').version; if (process.env.GITHUB_REF_NAME !== 'v' + version) throw new Error('Tag must be v' + version);"
       - run: npm ci
       - run: npm run check
       - run: npm run package

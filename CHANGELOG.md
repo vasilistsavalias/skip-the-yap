@@ -2,6 +2,13 @@
 
 All notable user-visible changes are documented here.
 
+## [1.0.2] - 2026-10-23
+
+### Fixed
+
+- Duplicate transcript insertion when Messenger updates its composer asynchronously.
+- Transcription controls remaining visible after their voice notes scroll outside the chat panel.
+
 ## [1.0.1] - 2026-10-21
 
 ### Added
