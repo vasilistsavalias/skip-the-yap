@@ -81,17 +81,7 @@ The selected audio is captured and validated once. If a temporary provider or mo
 
 ## How it works
 
-```mermaid
-flowchart LR
-    A[Select a voice note] --> B[Capture its audio]
-    B --> C[Validate size and format]
-    C --> D[Send to your chosen provider]
-    D --> E{Transcript returned?}
-    E -- Yes --> F[Insert and copy]
-    E -- Temporary failure --> G[Try configured fallback]
-    G --> D
-    E -- Terminal failure --> H[Show the error]
-```
+![Skip the Yap! voice-note transcription pipeline](assets/diagrams/voice-note-pipeline.svg)
 
 See [Architecture](docs/explanation/architecture.md) for the capture flow, request formats, and trust boundaries.
 
