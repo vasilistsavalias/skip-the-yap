@@ -107,33 +107,23 @@
       </div>
     </section>
 
-    <!-- Preferences -->
-    <section class="section prefs-section">
-      <h2 class="section-label">Workflow Automation</h2>
-      <div class="pref-row">
-        <div class="pref-info">
-          <span class="pref-title">Also copy to clipboard</span>
-          <span class="pref-desc">Enabled by default; turn off for chat-only insertion</span>
-        </div>
-        <label class="switch">
-          <input type="checkbox" id="autoCopyClipboard" aria-label="Automatically copy transcript to clipboard" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
-    </section>
-
     <!-- Advanced settings -->
     <section class="section advanced-section">
       <div class="dev-mode-bar">
         <div class="dev-mode-title-wrap">
           <span class="dev-icon">↪</span>
-          <div class="dev-text">
-            <span class="dev-title">Advanced settings</span>
-            <span class="dev-subtitle">Try another provider when one is unavailable</span>
-          </div>
+          <span class="dev-title">Advanced settings</span>
         </div>
         <label class="switch small-switch" title="Enable provider fallback">
           <input type="checkbox" id="fallbackEnabled" aria-label="Enable provider fallback" aria-expanded="false" aria-controls="fallbackContent">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="pref-row advanced-pref-row">
+        <span class="pref-title">Also copy to clipboard</span>
+        <label class="switch">
+          <input type="checkbox" id="autoCopyClipboard" aria-label="Automatically copy transcript to clipboard" checked>
           <span class="slider"></span>
         </label>
       </div>
@@ -155,8 +145,8 @@
           <span class="field-hint">Only providers marked “All modes” can apply Cleaned, TL;DR, or a custom prompt.</span>
         </div>
       </div>
+      <button type="button" class="clear-data-btn" id="clearDataBtn">Clear saved keys and settings</button>
     </section>
-    <button type="button" class="clear-data-btn" id="clearDataBtn">Clear saved keys and settings</button>
 
     <!-- Release Notes Modal -->
     <div id="releaseNotesModal" class="tour-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="releaseNotesTitle" aria-describedby="releaseNotesSummary" hidden>

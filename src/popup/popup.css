@@ -137,7 +137,7 @@ textarea:focus-visible,
   font-weight: 700;
 }
 .connection-test-btn:hover { border-color: var(--accent); color: var(--accent-strong); }
-.field-hint, .pref-desc, .dev-subtitle { color: var(--muted); font-size: 11px; }
+.field-hint { color: var(--muted); font-size: 11px; }
 .guide-toggle-btn {
   width: 100%; margin-top: 9px; padding: 8px 0; border: 0; border-top: 1px solid var(--border);
   background: transparent; color: var(--accent-strong); text-align: left; cursor: pointer; font-weight: 650;
@@ -181,9 +181,8 @@ textarea:focus-visible,
 .mode-card.active .mode-choice { border-color: var(--accent); background: var(--accent); box-shadow: inset 0 0 0 4px var(--background); }
 
 .pref-row { gap: 10px; padding: 9px 0; }
-.pref-row + .pref-row { border-top: 1px solid var(--border); }
-.pref-info { display: grid; }
 .pref-title { font-weight: 650; }
+.advanced-pref-row { margin-top: 10px; border-top: 1px solid var(--border); }
 
 .switch { position: relative; flex: 0 0 36px; width: 36px; height: 21px; }
 .switch input { position: absolute; opacity: 0; }
@@ -195,7 +194,6 @@ textarea:focus-visible,
 .small-switch { transform: scale(0.88); transform-origin: right center; }
 
 .dev-mode-bar, .dev-mode-title-wrap { gap: 8px; }
-.dev-text { display: grid; }
 .dev-title { font-weight: 700; }
 .dev-content { display: grid; gap: 12px; }
 .dev-warning-box { display: flex; gap: 8px; margin-top: 10px; padding: 9px; border: 1px solid color-mix(in srgb, var(--warning) 45%, transparent); border-radius: 8px; color: var(--warning); }
@@ -231,7 +229,7 @@ textarea:focus-visible,
 .fallback-key-row button { border: 1px solid var(--border); border-radius: 6px; background: var(--surface); cursor: pointer; }
 .fallback-key-details a { display: inline-block; margin-top: 5px; color: var(--accent-strong); font-size: 10px; }
 
-.clear-data-btn { justify-self: start; min-height: 24px; padding: 2px 0; color: var(--danger); text-align: left; text-decoration: underline; }
+.clear-data-btn { display: block; min-height: 24px; margin-top: 4px; padding: 2px 0; color: var(--danger); text-align: left; text-decoration: underline; }
 .clear-data-btn[data-confirming="true"] { color: var(--danger); font-weight: 700; }
 
 .tour-modal-backdrop {

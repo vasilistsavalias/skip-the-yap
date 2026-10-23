@@ -43,7 +43,9 @@ test("popup shows one dynamic provider editor and provider-specific guide", asyn
   assert.equal(document.querySelectorAll(".provider-key").length, 1);
   assert.equal(document.getElementById("autoInsertChat"), null);
   assert.equal(document.getElementById("autoCopyClipboard").checked, true);
-  assert.match(document.querySelector(".prefs-section").textContent, /enabled by default/i);
+  assert.equal(document.querySelector(".prefs-section"), null);
+  assert.equal(document.getElementById("autoCopyClipboard").closest(".advanced-section") !== null, true);
+  assert.doesNotMatch(document.body.textContent, /Workflow Automation|Enabled by default|Try another provider/i);
   assert.equal(document.getElementById("providerKeyLabel").textContent, "Gemini API key");
   assert.equal(document.getElementById("statusIndicator"), null);
   assert.equal(document.getElementById("providerNote"), null);
@@ -105,7 +107,7 @@ test("popup migrates old Auto routing and clears local data deliberately", async
   assert.deepEqual(Array.from(stored.fallbackProviders), ["groq"]);
   assert.equal(document.getElementById("fallbackEnabled").checked, true);
   assert.match(document.querySelector(".dev-title").textContent, /Advanced settings/);
-  assert.equal(document.getElementById("clearDataBtn").previousElementSibling?.classList.contains("advanced-section"), true);
+  assert.equal(document.getElementById("clearDataBtn").closest(".advanced-section") !== null, true);
 
   document.getElementById("clearDataBtn").click();
   await new Promise((resolve) => setImmediate(resolve));
