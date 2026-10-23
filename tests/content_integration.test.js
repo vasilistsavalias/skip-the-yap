@@ -101,7 +101,8 @@ test("a trusted Messenger trigger captures the selected voice note and starts tr
   trigger.click();
   assert.deepEqual(actions, []);
   triggerTrustedClick();
-  await new Promise((resolve) => setTimeout(resolve, 250));
+  await waitFor(() => dom.window.document.querySelector('[role="textbox"]').textContent === "captured" &&
+    dom.window.document.querySelector(".vt-toast")?.textContent.includes("inserted into chat"));
 
   assert.deepEqual(actions.filter((action) => action !== "END_AUDIO_CAPTURE"), [
     "BEGIN_AUDIO_CAPTURE",
