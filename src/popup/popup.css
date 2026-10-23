@@ -56,14 +56,14 @@ textarea:focus-visible,
 
 .popup-container { display: grid; gap: 13px; padding: 16px; }
 .popup-header, .section-header, .mode-top, .pref-row, .dev-mode-bar,
-.dev-mode-title-wrap, .form-item-header, .popup-footer, .tour-footer,
+.dev-mode-title-wrap, .form-item-header, .tour-footer,
 .tour-actions, .tour-dots, .header-brand, .header-right {
   display: flex;
   align-items: center;
 }
 
 .popup-header, .section-header, .pref-row, .dev-mode-bar, .form-item-header,
-.popup-footer, .tour-footer { justify-content: space-between; }
+.tour-footer { justify-content: space-between; }
 
 .popup-header { padding-bottom: 12px; border-bottom: 1px solid var(--border); }
 .header-brand, .header-right { gap: 9px; }
@@ -79,9 +79,6 @@ textarea:focus-visible,
   font-weight: 700;
 }
 
-.status-indicator { display: flex; align-items: center; gap: 5px; color: var(--success); font-size: 11px; }
-.status-indicator.needs-setup { color: var(--warning); }
-.status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .tour-info-btn, .release-notes-btn, .icon-btn, .tour-close-btn {
   display: grid;
   place-items: center;
@@ -122,6 +119,7 @@ textarea:focus-visible,
 .provider-key-header span { color: var(--muted); font-size: 10px; }
 
 .status-pill { display: flex; align-items: flex-start; gap: 6px; margin-top: 7px; color: var(--muted); font-size: 11px; }
+.status-pill[hidden] { display: none; }
 .pill-icon { flex: 0 0 auto; }
 .pill-text { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
 .status-pill.valid { color: var(--success); }
@@ -139,9 +137,7 @@ textarea:focus-visible,
   font-weight: 700;
 }
 .connection-test-btn:hover { border-color: var(--accent); color: var(--accent-strong); }
-.privacy-note, .field-hint, .pref-desc, .dev-subtitle { color: var(--muted); font-size: 11px; }
-.privacy-note { margin: 8px 0 0; }
-.provider-note { margin: 8px 0 0; color: var(--muted); font-size: 11px; }
+.field-hint, .pref-desc, .dev-subtitle { color: var(--muted); font-size: 11px; }
 .guide-toggle-btn {
   width: 100%; margin-top: 9px; padding: 8px 0; border: 0; border-top: 1px solid var(--border);
   background: transparent; color: var(--accent-strong); text-align: left; cursor: pointer; font-weight: 650;
@@ -235,9 +231,7 @@ textarea:focus-visible,
 .fallback-key-row button { border: 1px solid var(--border); border-radius: 6px; background: var(--surface); cursor: pointer; }
 .fallback-key-details a { display: inline-block; margin-top: 5px; color: var(--accent-strong); font-size: 10px; }
 
-.popup-footer { align-items: flex-end; gap: 8px; }
-.save-status { color: var(--muted); font-size: 10px; }
-.clear-data-btn { padding: 0; color: var(--muted); text-decoration: underline; }
+.clear-data-btn { justify-self: start; min-height: 24px; padding: 2px 0; color: var(--danger); text-align: left; text-decoration: underline; }
 .clear-data-btn[data-confirming="true"] { color: var(--danger); font-weight: 700; }
 
 .tour-modal-backdrop {

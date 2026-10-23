@@ -7,25 +7,24 @@
   const keyValues = {};
   const connectionStates = {};
   const providerInfo = Object.freeze({
-    gemini: { label: "Gemini", key: "geminiApiKey", tier: "Free tier", capability: "All modes", note: "Google AI Studio offers a free tier. Availability and quotas can vary.", guide: ["Open Google AI Studio.", "Select Create API key.", "Copy the key and paste it above."], guideLabel: "Open Google AI Studio", guideUrl: "https://aistudio.google.com/apikey" },
-    groq: { label: "Groq", key: "groqApiKey", tier: "Free tier", capability: "All modes", note: "Fast Whisper transcription with a free developer allowance.", guide: ["Open Groq Console.", "Create an API key.", "Copy the key and paste it above."], guideLabel: "Open Groq Console", guideUrl: "https://console.groq.com/keys" },
-    huggingface: { label: "Hugging Face", key: "huggingfaceApiKey", tier: "Free credits", capability: "Verbatim only", note: "Free accounts receive limited monthly inference credits; model availability can vary.", guide: ["Open Hugging Face access tokens.", "Create a fine-grained token with Inference Providers permission.", "Copy the token and paste it above."], guideLabel: "Open Hugging Face", guideUrl: "https://huggingface.co/settings/tokens" },
-    openai: { label: "OpenAI", key: "openaiApiKey", tier: "Pay as you go", capability: "Verbatim only", note: "Requires API billing; a ChatGPT subscription does not include API usage.", guide: ["Open the OpenAI Platform.", "Add billing credits if required.", "Create a secret key and paste it above."], guideLabel: "Open OpenAI Platform", guideUrl: "https://platform.openai.com/api-keys" },
-    xai: { label: "xAI", key: "xaiApiKey", tier: "Pay as you go", capability: "Verbatim only", note: "Uses xAI's dedicated speech-to-text endpoint.", guide: ["Open the xAI Console.", "Create an API key with API access.", "Copy the key and paste it above."], guideLabel: "Open xAI Console", guideUrl: "https://console.x.ai/" },
-    elevenlabs: { label: "ElevenLabs", key: "elevenLabsApiKey", tier: "Free credits", capability: "Verbatim only", note: "The free plan includes limited Scribe transcription credits; paid usage is optional.", guide: ["Open ElevenLabs API Keys.", "Create or copy an API key.", "Paste the key above."], guideLabel: "Open ElevenLabs", guideUrl: "https://elevenlabs.io/app/settings/api-keys" },
-    openrouter: { label: "OpenRouter", key: "openrouterApiKey", tier: "Pay as you go", capability: "Verbatim only", note: "One key provides access to multiple hosted transcription models.", guide: ["Open OpenRouter Keys.", "Create an API key and add credits.", "Copy the key and paste it above."], guideLabel: "Open OpenRouter", guideUrl: "https://openrouter.ai/settings/keys" }
+    gemini: { label: "Gemini", key: "geminiApiKey", tier: "Free tier", capability: "All modes", guide: ["Open Google AI Studio.", "Select Create API key.", "Copy the key and paste it above."], guideLabel: "Open Google AI Studio", guideUrl: "https://aistudio.google.com/apikey" },
+    groq: { label: "Groq", key: "groqApiKey", tier: "Free tier", capability: "All modes", guide: ["Open Groq Console.", "Create an API key.", "Copy the key and paste it above."], guideLabel: "Open Groq Console", guideUrl: "https://console.groq.com/keys" },
+    huggingface: { label: "Hugging Face", key: "huggingfaceApiKey", tier: "Free credits", capability: "Verbatim only", guide: ["Open Hugging Face access tokens.", "Create a fine-grained token with Inference Providers permission.", "Copy the token and paste it above."], guideLabel: "Open Hugging Face", guideUrl: "https://huggingface.co/settings/tokens" },
+    openai: { label: "OpenAI", key: "openaiApiKey", tier: "Pay as you go", capability: "Verbatim only", guide: ["Open the OpenAI Platform.", "Add billing credits if required.", "Create a secret key and paste it above."], guideLabel: "Open OpenAI Platform", guideUrl: "https://platform.openai.com/api-keys" },
+    xai: { label: "xAI", key: "xaiApiKey", tier: "Pay as you go", capability: "Verbatim only", guide: ["Open the xAI Console.", "Create an API key with API access.", "Copy the key and paste it above."], guideLabel: "Open xAI Console", guideUrl: "https://console.x.ai/" },
+    elevenlabs: { label: "ElevenLabs", key: "elevenLabsApiKey", tier: "Free credits", capability: "Verbatim only", guide: ["Open ElevenLabs API Keys.", "Create or copy an API key.", "Paste the key above."], guideLabel: "Open ElevenLabs", guideUrl: "https://elevenlabs.io/app/settings/api-keys" },
+    openrouter: { label: "OpenRouter", key: "openrouterApiKey", tier: "Pay as you go", capability: "Verbatim only", guide: ["Open OpenRouter Keys.", "Create an API key and add credits.", "Copy the key and paste it above."], guideLabel: "Open OpenRouter", guideUrl: "https://openrouter.ai/settings/keys" }
   });
   let primaryProvider = "gemini";
   let fallbackProviders = [];
   let providerModels = {};
-  let saveFlashTimer;
   let clearConfirmationTimer;
   let currentTourSlide = 0;
 
   document.addEventListener("DOMContentLoaded", initialize);
 
   function initialize() {
-    for (const id of ["primaryProvider", "providerTierBadge", "providerApiKey", "providerKeyLabel", "providerCapability", "providerNote", "toggleVisibilityBtn", "toggleGuideBtn", "guideAccordion", "guideSteps", "guideLink", "apiStatusPill", "testApiKeyBtn", "statusIndicator", "fallbackEnabled", "fallbackContent", "routingList", "fallbackProviderSelect", "addFallbackBtn", "autoCopyClipboard", "customPrompt", "resetPromptBtn", "versionTag", "releaseNotesBtn", "releaseNotesModal", "releaseNotesCloseBtn", "releaseNotesVersion", "startTourBtn", "tourModal", "tourCloseBtn", "tourPrevBtn", "tourNextBtn", "clearDataBtn"]) {
+    for (const id of ["primaryProvider", "providerTierBadge", "providerApiKey", "providerKeyLabel", "providerCapability", "toggleVisibilityBtn", "toggleGuideBtn", "guideAccordion", "guideSteps", "guideLink", "apiStatusPill", "testApiKeyBtn", "fallbackEnabled", "fallbackContent", "routingList", "fallbackProviderSelect", "addFallbackBtn", "autoCopyClipboard", "customPrompt", "resetPromptBtn", "versionTag", "releaseNotesBtn", "releaseNotesModal", "releaseNotesCloseBtn", "releaseNotesVersion", "startTourBtn", "tourModal", "tourCloseBtn", "tourPrevBtn", "tourNextBtn", "clearDataBtn"]) {
       elements[id] = document.getElementById(id);
     }
     const installedVersion = chrome.runtime.getManifest().version;
@@ -136,7 +135,6 @@
     elements.toggleVisibilityBtn.textContent = "👁️";
     elements.toggleVisibilityBtn.setAttribute("aria-label", `Show ${info.label} API key`);
     elements.testApiKeyBtn.textContent = `Test ${info.label}`;
-    elements.providerNote.textContent = info.note;
     elements.toggleGuideBtn.firstChild.textContent = `How to get a ${info.label} API key `;
     elements.guideSteps.replaceChildren(...info.guide.map((step) => { const item = document.createElement("li"); item.textContent = step; return item; }));
     elements.guideLink.href = info.guideUrl;
@@ -147,11 +145,10 @@
 
   function renderStatus() {
     const state = connectionStates[primaryProvider] || { type: "info", message: "Not configured" };
+    elements.apiStatusPill.hidden = state.type === "info";
     elements.apiStatusPill.className = `status-pill ${state.type}`;
     elements.apiStatusPill.querySelector(".pill-icon").textContent = { valid: "✅", invalid: "❌", checking: "⏳", info: "ℹ️" }[state.type] || "ℹ️";
     elements.apiStatusPill.querySelector(".pill-text").textContent = state.message;
-    elements.statusIndicator.querySelector(".status-text").textContent = state.type === "valid" ? "Connected" : keyValues[primaryProvider] ? "Configured" : "Needs setup";
-    elements.statusIndicator.classList.toggle("needs-setup", !keyValues[primaryProvider]);
   }
 
   function renderRouting() {
@@ -425,20 +422,16 @@
   }
 
   async function save(values, callback) {
-    try { await chrome.storage.local.set(values); flashSaved(); callback?.(); }
-    catch { document.getElementById("saveStatus").textContent = "Could not save changes"; }
+    try { await chrome.storage.local.set(values); callback?.(); }
+    catch {
+      connectionStates[primaryProvider] = { type: "invalid", message: "Could not save changes. Try again." };
+      renderStatus();
+    }
   }
 
   function debounceSave(key, value, callback) {
     clearTimeout(saveTimers.get(key));
     saveTimers.set(key, setTimeout(() => { saveTimers.delete(key); save({ [key]: value }, callback); }, 350));
-  }
-
-  function flashSaved() {
-    const status = document.getElementById("saveStatus");
-    status.textContent = "Saved locally ✓";
-    clearTimeout(saveFlashTimer);
-    saveFlashTimer = setTimeout(() => { status.textContent = "All changes saved automatically ✓"; }, 1500);
   }
 
   async function clearSavedData() {
@@ -466,7 +459,6 @@
     renderProvider();
     renderRouting();
     resetClearConfirmation();
-    flashSaved();
   }
 
   function resetClearConfirmation() {

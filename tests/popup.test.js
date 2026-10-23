@@ -45,6 +45,10 @@ test("popup shows one dynamic provider editor and provider-specific guide", asyn
   assert.equal(document.getElementById("autoCopyClipboard").checked, true);
   assert.match(document.querySelector(".prefs-section").textContent, /enabled by default/i);
   assert.equal(document.getElementById("providerKeyLabel").textContent, "Gemini API key");
+  assert.equal(document.getElementById("statusIndicator"), null);
+  assert.equal(document.getElementById("providerNote"), null);
+  assert.equal(document.querySelector(".privacy-note"), null);
+  assert.equal(document.getElementById("apiStatusPill").hidden, true);
   keyInput.value = "test-only-key";
   keyInput.dispatchEvent(new dom.window.Event("input", { bubbles: true }));
   await new Promise((resolve) => setImmediate(resolve));
@@ -65,6 +69,7 @@ test("popup shows one dynamic provider editor and provider-specific guide", asyn
   document.getElementById("testApiKeyBtn").click();
   await new Promise((resolve) => setImmediate(resolve));
   assert.deepEqual(requestedOrigins, ["https://api.openai.com/*"]);
+  assert.equal(document.getElementById("apiStatusPill").hidden, false);
   assert.match(document.getElementById("apiStatusPill").textContent, /complete readable message/);
 });
 
@@ -99,6 +104,8 @@ test("popup migrates old Auto routing and clears local data deliberately", async
   assert.equal(stored.primaryProvider, "gemini");
   assert.deepEqual(Array.from(stored.fallbackProviders), ["groq"]);
   assert.equal(document.getElementById("fallbackEnabled").checked, true);
+  assert.match(document.querySelector(".dev-title").textContent, /Advanced settings/);
+  assert.equal(document.getElementById("clearDataBtn").previousElementSibling?.classList.contains("advanced-section"), true);
 
   document.getElementById("clearDataBtn").click();
   await new Promise((resolve) => setImmediate(resolve));
@@ -114,6 +121,9 @@ test("popup tour remains keyboard dismissible", async () => {
   const document = dom.window.document;
   document.getElementById("startTourBtn").click();
   assert.equal(document.getElementById("tourModal").hidden, false);
+  assert.equal(document.querySelectorAll(".tour-slide").length, 4);
+  assert.match(document.querySelector('[data-slide="3"]').textContent, /local extension storage/i);
+  assert.match(document.querySelector('[data-slide="3"]').textContent, /no backend/i);
   document.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
   assert.equal(document.getElementById("tourModal").hidden, true);
 });

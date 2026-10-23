@@ -20,10 +20,6 @@
       <div class="header-right">
         <button type="button" class="release-notes-btn" id="releaseNotesBtn" title="What's new" aria-label="View what's new">&#10024;</button>
         <button type="button" class="tour-info-btn" id="startTourBtn" title="Show Tour & Guide" aria-label="Open help tour">ℹ️</button>
-        <div class="status-indicator needs-setup" id="statusIndicator">
-          <span class="status-dot" aria-hidden="true"></span>
-          <span class="status-text">Needs setup</span>
-        </div>
       </div>
     </header>
 
@@ -54,11 +50,9 @@
           <input type="password" id="providerApiKey" placeholder="Paste Gemini key…" spellcheck="false" autocomplete="off">
           <button type="button" id="toggleVisibilityBtn" title="Show API key" aria-label="Show Gemini API key" class="icon-btn">👁️</button>
         </div>
-        <div id="apiStatusPill" class="status-pill info" role="status" aria-live="polite"><span class="pill-icon">ℹ️</span><span class="pill-text">Not configured</span></div>
+        <div id="apiStatusPill" class="status-pill info" role="status" aria-live="polite" hidden><span class="pill-icon">ℹ️</span><span class="pill-text"></span></div>
         <button type="button" class="connection-test-btn" id="testApiKeyBtn">Test Gemini</button>
       </div>
-
-      <p class="provider-note" id="providerNote"></p>
 
       <button type="button" class="guide-toggle-btn" id="toggleGuideBtn" aria-expanded="false" aria-controls="guideAccordion">How to get a Gemini API key <span>▾</span></button>
       <div id="guideAccordion" class="guide-accordion collapsed" aria-hidden="true" inert>
@@ -68,7 +62,6 @@
         </div>
       </div>
 
-      <p class="privacy-note">Keys stay in Chrome's local extension storage. Audio is sent only to providers you configure when you click Transcribe.</p>
     </section>
 
     <!-- Mode Presets -->
@@ -129,13 +122,13 @@
       </div>
     </section>
 
-    <!-- Advanced fallback -->
+    <!-- Advanced settings -->
     <section class="section advanced-section">
       <div class="dev-mode-bar">
         <div class="dev-mode-title-wrap">
           <span class="dev-icon">↪</span>
           <div class="dev-text">
-            <span class="dev-title">Advanced fallback</span>
+            <span class="dev-title">Advanced settings</span>
             <span class="dev-subtitle">Try another provider when one is unavailable</span>
           </div>
         </div>
@@ -163,12 +156,7 @@
         </div>
       </div>
     </section>
-
-    <!-- Footer -->
-    <footer class="popup-footer">
-      <div class="save-status" id="saveStatus">All changes saved automatically ✓</div>
-      <button type="button" class="clear-data-btn" id="clearDataBtn">Clear saved key and settings</button>
-    </footer>
+    <button type="button" class="clear-data-btn" id="clearDataBtn">Clear saved keys and settings</button>
 
     <!-- Release Notes Modal -->
     <div id="releaseNotesModal" class="tour-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="releaseNotesTitle" aria-describedby="releaseNotesSummary" hidden>
@@ -205,7 +193,7 @@
         <div class="tour-slides-wrap">
           <!-- Slide 1 -->
           <div class="tour-slide active" data-slide="0">
-            <div class="tour-step-pill">Step 1 of 3</div>
+            <div class="tour-step-pill">Step 1 of 4</div>
             <div class="tour-illustration">🎙️ ⚡</div>
             <h2 class="tour-title" id="tourTitle">Voice Notes to Text</h2>
             <p class="tour-desc">When you click Transcribe, the selected voice note is sent to your configured provider and returned as text. Supports Greek, English, and informal slang.</p>
@@ -213,7 +201,7 @@
 
           <!-- Slide 2 -->
           <div class="tour-slide" data-slide="1">
-            <div class="tour-step-pill">Step 2 of 3</div>
+            <div class="tour-step-pill">Step 2 of 4</div>
             <div class="tour-mockup-bubble">
               <span class="mock-play">▶</span>
               <span class="mock-time">0:17</span>
@@ -225,10 +213,18 @@
 
           <!-- Slide 3 -->
           <div class="tour-slide" data-slide="2">
-            <div class="tour-step-pill">Step 3 of 3</div>
+            <div class="tour-step-pill">Step 3 of 4</div>
             <div class="tour-illustration">💬 🎯 📝</div>
             <h2 class="tour-title">Inserted Automatically</h2>
             <p class="tour-desc">The finished transcript goes straight into the active chat box. Choose <strong>Verbatim</strong>, <strong>Cleaned</strong>, or <strong>TL;DR</strong> when supported by your provider.</p>
+          </div>
+
+          <!-- Slide 4 -->
+          <div class="tour-slide" data-slide="3">
+            <div class="tour-step-pill">Step 4 of 4</div>
+            <div class="tour-illustration">🔐 🛡️</div>
+            <h2 class="tour-title">Your data stays yours</h2>
+            <p class="tour-desc">Your keys stay in Chrome's local extension storage. Only the voice note you select is sent directly to providers you configure. Skip the Yap! has no backend, analytics, or transcript history.</p>
           </div>
         </div>
 
@@ -238,6 +234,7 @@
             <button type="button" class="tour-dot active" data-dot="0" aria-label="Show tour step 1" aria-current="step"></button>
             <button type="button" class="tour-dot" data-dot="1" aria-label="Show tour step 2"></button>
             <button type="button" class="tour-dot" data-dot="2" aria-label="Show tour step 3"></button>
+            <button type="button" class="tour-dot" data-dot="3" aria-label="Show tour step 4"></button>
           </div>
           <div class="tour-actions">
             <button type="button" class="tour-nav-btn secondary" id="tourPrevBtn" style="display: none;">Back</button>

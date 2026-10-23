@@ -11,10 +11,11 @@ All notable user-visible changes are documented here.
 ### Changed
 
 - The popup version now comes directly from the installed extension manifest.
+- The popup keeps routine setup details out of the main view, moves privacy details into the product tour, and places the confirmed clear-data action below Advanced settings.
 
 ### Fixed
 
-- Floating transcription controls lagging behind voice DMs during wheel-driven Instagram and Messenger scrolling.
+- Transcription controls now use native CSS anchor positioning in supported Chrome versions so they stay attached to their voice DM and disappear with it while scrolling.
 
 ## [1.0.2] - 2026-10-23
 
