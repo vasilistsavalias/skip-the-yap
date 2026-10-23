@@ -2,6 +2,20 @@
 
 All notable user-visible changes are documented here.
 
+## [1.0.3] - 2026-10-23
+
+### Added
+
+- A What's new panel in the extension popup with the installed version and latest fixes.
+
+### Changed
+
+- The popup version now comes directly from the installed extension manifest.
+
+### Fixed
+
+- Floating transcription controls lagging behind voice DMs during wheel-driven Instagram and Messenger scrolling.
+
 ## [1.0.2] - 2026-10-23
 
 ### Fixed
