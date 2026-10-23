@@ -15,6 +15,13 @@
   const transcribeButtons = new WeakMap();
   const activeCancellations = new WeakMap();
   const buttonAnchors = new Map();
+  const nativeAnchorPositioning = [
+    "anchor-name: --vt-anchor",
+    "position-anchor: --vt-anchor",
+    "top: anchor(center)",
+    "position-visibility: anchors-visible"
+  ].every((declaration) => globalThis.CSS?.supports?.(declaration));
+  let nextAnchorId = 0;
   let positionFrame = 0;
 
   function sendMessage(payload) {
@@ -37,26 +44,63 @@
     showToast.timer = setTimeout(() => toast.classList.remove("visible"), 3200);
   }
 
+  function releaseNativeAnchor(record) {
+    if (!record.anchor) return;
+    if (record.previousAnchorName) {
+      record.anchor.style.setProperty("anchor-name", record.previousAnchorName, record.previousAnchorPriority);
+    } else {
+      record.anchor.style.removeProperty("anchor-name");
+    }
+    record.anchor = null;
+  }
+
+  function removeVoiceNoteControl(button, record) {
+    releaseNativeAnchor(record);
+    button.remove();
+    buttonAnchors.delete(button);
+    if (transcribeButtons.get(record.container) === button) transcribeButtons.delete(record.container);
+  }
+
+  function attachNativeAnchor(button, record, anchor, viewportWidth) {
+    if (record.anchor !== anchor) {
+      releaseNativeAnchor(record);
+      record.anchor = anchor;
+      record.anchorName = `--vt-voice-${++nextAnchorId}`;
+      record.previousAnchorName = anchor.style.getPropertyValue("anchor-name");
+      record.previousAnchorPriority = anchor.style.getPropertyPriority("anchor-name");
+      anchor.style.setProperty("anchor-name", record.anchorName);
+      button.style.setProperty("position-anchor", record.anchorName);
+    }
+
+    const rect = anchor.getBoundingClientRect();
+    const outgoing = rect.left + rect.width / 2 > viewportWidth / 2;
+    button.classList.toggle("vt-anchor-outgoing", outgoing);
+    button.classList.toggle("vt-anchor-incoming", !outgoing);
+    button.style.setProperty("--vt-control-gap", instagramDocument ? "46px" : "8px");
+    button.hidden = false;
+  }
+
   function placeVoiceNoteControls() {
     if (typeof document === "undefined" || !document.documentElement || !document.body) return;
     const viewportWidth = document.documentElement.clientWidth || globalThis.innerWidth || 0;
     const viewportHeight = document.documentElement.clientHeight || globalThis.innerHeight || 0;
     const controlGap = instagramDocument ? 46 : 8;
 
-    for (const [button, container] of buttonAnchors) {
+    for (const [button, record] of buttonAnchors) {
+      const { container } = record;
       if (!button.isConnected || !container.isConnected) {
-        button.remove();
-        buttonAnchors.delete(button);
-        transcribeButtons.delete(container);
+        removeVoiceNoteControl(button, record);
         continue;
       }
       if (!contentCore.isVoiceContainer(container)) {
-        button.remove();
-        buttonAnchors.delete(button);
-        transcribeButtons.delete(container);
+        removeVoiceNoteControl(button, record);
         continue;
       }
       const anchor = contentCore.findVoiceAnchor(container);
+      if (nativeAnchorPositioning) {
+        attachNativeAnchor(button, record, anchor, viewportWidth);
+        continue;
+      }
       const rect = anchor.getBoundingClientRect();
       button.hidden = !contentCore.isVisibleWithinClippingAncestors(
         anchor,
@@ -380,7 +424,7 @@
     button.title = `Transcribe voice note${contentCore.findDuration(container) ? ` (${contentCore.findDuration(container)})` : ""}`;
     button.hidden = true;
     document.body.append(button);
-    buttonAnchors.set(button, container);
+    buttonAnchors.set(button, { container, anchor: null, anchorName: "", previousAnchorName: "", previousAnchorPriority: "" });
     scheduleControlPosition();
     transcribeButtons.set(container, button);
   }
@@ -434,12 +478,15 @@
     attributeFilter: ["aria-label", "role"]
   });
 
-  document.addEventListener("scroll", scheduleControlPosition, true);
-  document.addEventListener("wheel", scheduleControlPosition, { capture: true, passive: true });
+  if (!nativeAnchorPositioning) {
+    document.addEventListener("scroll", scheduleControlPosition, true);
+    document.addEventListener("wheel", scheduleControlPosition, { capture: true, passive: true });
+  }
   globalThis.addEventListener("resize", scheduleControlPosition);
   globalThis.addEventListener("unload", () => {
     observer.disconnect();
     if (positionFrame) globalThis.cancelAnimationFrame(positionFrame);
+    for (const record of buttonAnchors.values()) releaseNativeAnchor(record);
     buttonAnchors.clear();
   }, { once: true });
 

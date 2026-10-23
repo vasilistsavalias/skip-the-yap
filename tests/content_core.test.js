@@ -256,7 +256,7 @@ test("hides a Messenger control when its voice note scrolls outside the chat pan
   dom.window.close();
 });
 
-test("repositions an Instagram control after wheel-driven virtual scrolling", async () => {
+test("anchors an Instagram control to its voice note without scroll coordinate updates", async () => {
   const dom = new JSDOM(`
     <body>
       <div id="chat" style="overflow-y: hidden">
@@ -271,6 +271,14 @@ test("repositions an Instagram control after wheel-driven virtual scrolling", as
   const document = dom.window.document;
   const chat = document.getElementById("chat");
   const voice = document.getElementById("voice");
+  dom.window.CSS = {
+    supports: (declaration) => [
+      "anchor-name: --vt-anchor",
+      "position-anchor: --vt-anchor",
+      "top: anchor(center)",
+      "position-visibility: anchors-visible"
+    ].includes(declaration)
+  };
   chat.getBoundingClientRect = () => ({ left: 100, right: 500, top: 100, bottom: 300, width: 400, height: 200 });
   voice.getBoundingClientRect = () => ({ left: 140, right: 340, top: 130, bottom: 190, width: 200, height: 60 });
   dom.window.chrome = {
@@ -288,12 +296,21 @@ test("repositions an Instagram control after wheel-driven virtual scrolling", as
 
   const trigger = document.querySelector(".vt-transcribe-trigger");
   assert.equal(trigger?.hidden, false);
-  assert.equal(trigger?.style.top, "160px");
+  assert.match(voice.style.getPropertyValue("anchor-name"), /^--vt-voice-/);
+  assert.equal(trigger?.style.getPropertyValue("position-anchor"), voice.style.getPropertyValue("anchor-name"));
+  assert.equal(trigger?.style.top, "");
+  assert.equal(trigger?.style.left, "");
 
   voice.getBoundingClientRect = () => ({ left: 140, right: 340, top: 30, bottom: 90, width: 200, height: 60 });
   chat.dispatchEvent(new dom.window.WheelEvent("wheel", { bubbles: true }));
   await new Promise((resolve) => dom.window.requestAnimationFrame(resolve));
 
-  assert.equal(trigger?.hidden, true);
+  assert.equal(trigger?.hidden, false);
+  assert.equal(trigger?.style.top, "");
+
+  voice.querySelector("span").remove();
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  assert.equal(trigger?.isConnected, false);
+  assert.equal(voice.style.getPropertyValue("anchor-name"), "");
   dom.window.close();
 });
