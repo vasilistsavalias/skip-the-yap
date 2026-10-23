@@ -180,8 +180,8 @@
       }
 
       const execCommand = options.execCommand || documentObject.execCommand?.bind(documentObject);
-      const executed = execCommand ? Boolean(execCommand("insertText", false, insertion)) : false;
-      if (!executed || !composerText(composer).includes(transcript)) {
+      if (execCommand) execCommand("insertText", false, insertion);
+      if (!composerText(composer).includes(transcript)) {
         composer.append(documentObject.createTextNode(insertion));
         dispatchInput(composer, insertion);
       }

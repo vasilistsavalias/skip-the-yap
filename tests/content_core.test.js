@@ -92,6 +92,23 @@ test("uses a verified contenteditable fallback when execCommand fails", async ()
   assert.equal(dom.window.document.querySelector('[role="textbox"]').textContent, "Draft transcript");
 });
 
+test("does not duplicate text when execCommand inserts but reports failure", async () => {
+  const dom = new JSDOM('<div role="textbox" data-lexical-editor="true" contenteditable="true" aria-label="Message"></div>', { pretendToBeVisual: true });
+  const document = dom.window.document;
+  const composer = document.querySelector('[role="textbox"]');
+
+  const inserted = await contentCore.insertTranscript(document, "transcript", {
+    execCommand: (_command, _showUi, text) => {
+      composer.append(document.createTextNode(text));
+      return false;
+    },
+    waitForPaint: async () => {}
+  });
+
+  assert.equal(inserted, true);
+  assert.equal(composer.textContent, "transcript");
+});
+
 test("mounts a transcription button after Messenger hydrates a voice note in stages", async () => {
   const dom = new JSDOM('<body><main id="thread"></main></body>', {
     runScripts: "outside-only",
