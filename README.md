@@ -144,4 +144,4 @@ Bug reports and focused pull requests are welcome. Read [CONTRIBUTING.md](CONTRI
 
 ## License
 
-Released under the [MIT License](LICENSE). Provider names and service marks belong to their respective owners.
+Released under the [GNU General Public License v3.0](LICENSE). Provider names and service marks belong to their respective owners.

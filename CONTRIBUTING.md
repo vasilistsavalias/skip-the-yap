@@ -31,4 +31,4 @@ See the [development guide](docs/how-to/development.md) for runtime boundaries a
 - Do not commit generated `dist/` files.
 - Confirm the extension contains no bundled provider credential, analytics, or developer backend.
 
-By contributing, you agree that your contribution is licensed under the repository's [MIT License](LICENSE).
+By contributing, you agree that your contribution is licensed under the repository's [GNU General Public License v3.0](LICENSE).

@@ -3,7 +3,7 @@
   "version": "1.0.3",
   "private": true,
   "description": "Turn Messenger and Instagram voice notes into readable transcripts or quick summaries.",
-  "license": "MIT",
+  "license": "GPL-3.0-only",
   "scripts": {
     "build": "node tools/build.mjs",
     "check": "npm run lint && npm test && npm run build",
