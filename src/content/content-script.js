@@ -12,6 +12,7 @@
   const PAGE_SOURCE_FOUND = "voice-transcriber:source-found";
   const PAGE_AUDIO_DATA_FOUND = "voice-transcriber:audio-data-found";
   const SOURCE_DISCOVERY_TIMEOUT_MS = 3500;
+  const CONTROL_SIZE_PX = 36;
   const transcribeButtons = new WeakMap();
   const activeCancellations = new WeakMap();
   const buttonAnchors = new Map();
@@ -109,8 +110,8 @@
       );
       if (button.hidden) continue;
       const outgoing = rect.left + rect.width / 2 > viewportWidth / 2;
-      const preferredLeft = outgoing ? rect.left - 30 - controlGap : rect.right + controlGap;
-      button.style.setProperty("left", `${Math.max(8, Math.min(preferredLeft, viewportWidth - 38))}px`, "important");
+      const preferredLeft = outgoing ? rect.left - CONTROL_SIZE_PX - controlGap : rect.right + controlGap;
+      button.style.setProperty("left", `${Math.max(8, Math.min(preferredLeft, viewportWidth - CONTROL_SIZE_PX - 8))}px`, "important");
       button.style.setProperty("top", `${rect.top + rect.height / 2}px`, "important");
     }
 

@@ -12,6 +12,8 @@ All notable user-visible changes are documented here.
 
 - The popup version now comes directly from the installed extension manifest.
 - The popup keeps routine setup details out of the main view, moves privacy details into the product tour, and groups clipboard, provider fallback, and confirmed clear-data controls inside a collapsible Advanced settings panel.
+- Transcription controls are larger and easier to target without covering the voice note.
+- Chrome Web Store screenshots and listing copy now reflect the current Messenger, Instagram, transcription-mode, and privacy experience.
 
 ### Fixed
 

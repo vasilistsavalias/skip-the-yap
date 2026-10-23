@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Skip the Yap!",
   "version": "1.0.3",
-  "description": "Turn Messenger and Instagram voice notes into readable transcripts or quick summaries with one click.",
+  "description": "Turn Messenger and Instagram voice notes into transcripts, cleaned-up text, or a quick TL;DR with one click.",
   "action": {
     "default_popup": "popup/index.html",
     "default_title": "Skip the Yap!",

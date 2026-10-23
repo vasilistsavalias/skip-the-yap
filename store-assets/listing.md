@@ -6,33 +6,41 @@ Skip the Yap!
 
 ## Short description
 
-Turn Messenger and Instagram voice notes into readable transcripts or quick summaries with one click.
+Turn Messenger and Instagram voice notes into transcripts, cleaned-up text, or a quick TL;DR with one click.
 
 ## Detailed description
 
 Let them yap. You get the point.
 
-Your friends can yap. You do not have to listen. Skip the Yap! adds a small transcription control beside supported Messenger, Facebook Messages, and Instagram Direct voice notes. Select a note to get the complete transcript, clean up the rambling, or skip straight to the key points.
+Skip the Yap! puts a transcription button next to supported voice notes in Messenger and Instagram DMs. The button stays attached to the right voice note while you scroll. Click it for the full transcript, a cleaned-up version, or a quick TL;DR.
 
-The extension captures only the voice note you select and sends it directly to the AI provider you configured.
+The result is inserted into the active chat box automatically. You can also copy it to the clipboard.
 
-Features:
+Bring your own API key:
 
-- Transcribe one selected voice note at a time.
-- Use your own Gemini, Groq, Hugging Face, OpenAI, xAI, ElevenLabs, or OpenRouter key.
-- Choose Verbatim, Cleaned, TL;DR, or a custom prompt where supported.
-- Insert the result directly into the active chat composer and copy it to the clipboard by default. Clipboard copying can be disabled.
-- Configure ordered provider and model fallbacks for temporary failures.
-- Keep settings and provider keys in local Chrome extension storage.
+Choose Gemini, Groq, Hugging Face, OpenAI, xAI, ElevenLabs, or OpenRouter. There is no extension account and no developer-operated backend. The extension is free; your chosen provider may charge for API usage.
 
-Privacy by design:
+What it does:
 
-- No developer-operated backend.
-- No analytics, advertising, or transcript history.
-- Provider access is requested only when you configure and test that provider.
-- Audio goes directly to providers you explicitly configure and is governed by their API terms.
+- Transcribes only the voice note you select.
+- Works in Messenger, Facebook Messages, and Instagram DMs.
+- Offers Verbatim, Cleaned, TL;DR, and custom prompts where supported.
+- Keeps the transcription button beside its voice note as the conversation scrolls.
+- Inserts the result into the active chat box and can copy it to the clipboard.
+- Supports ordered provider and model fallbacks.
+- Stores your keys and settings in Chrome's local extension storage.
 
-This independent project is not affiliated with or endorsed by Meta, Facebook, Instagram, Google, OpenAI, xAI, Groq, ElevenLabs, Hugging Face, or OpenRouter.
+Privacy:
+
+- No analytics, ads, behavioral tracking, or transcript history.
+- The extension does not read or upload voice notes automatically.
+- Only the voice note you choose is sent directly to providers you configure.
+- The developer cannot access your keys, audio, transcripts, conversations, or settings.
+- You can clear every saved key and setting from Advanced settings.
+
+Your chosen AI provider handles the selected audio under its own API terms and privacy policy.
+
+Skip the Yap! is free and open source. It is an independent project and is not affiliated with Meta or any supported AI provider.
 
 ## Category
 

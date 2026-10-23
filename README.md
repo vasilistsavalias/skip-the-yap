@@ -2,7 +2,7 @@
   <img src="assets/brand/skip-the-yap.svg" width="128" alt="Skip the Yap! logo">
   <h1>Skip the Yap!</h1>
   <h3>Let them yap. You get the point.</h3>
-  <p>Turn Messenger and Instagram voice notes into readable transcripts or quick summaries with one click.</p>
+  <p>Turn Messenger and Instagram voice notes into transcripts, cleaned-up text, or a quick TL;DR with one click.</p>
   <p><strong>Transcribe · Clean up · Summarize</strong></p>
   <p>Privacy first · Your key, your provider · Open source</p>
 </div>
@@ -19,9 +19,11 @@
   <img src="https://cdn.simpleicons.org/githubactions/2088FF" height="32" alt="GitHub Actions" title="GitHub Actions">
 </p>
 
-![Skip the Yap! transcribing a synthetic voice note](store-assets/screenshots/01-transcribe.png)
+![Skip the Yap! transcribing a synthetic Messenger voice note](store-assets/screenshots/01-messenger.png)
 
-Skip the Yap! is an open-source Chrome extension for people who receive voice notes but would rather read them. It adds a small transcription control beside supported Messenger and Instagram Direct voice notes, captures only the message you select, and sends that audio directly to your chosen AI provider.
+Skip the Yap! is an open-source Chrome extension for people who receive voice notes but would rather read them. It adds a transcription button beside supported Messenger and Instagram Direct voice notes, captures only the message you select, and sends that audio directly to your chosen AI provider.
+
+![Skip the Yap! controls beside synthetic Instagram voice notes](store-assets/screenshots/02-instagram.png)
 
 > **No collection. No tracking. No developer backend.** The extension developer cannot see your keys, audio, transcripts, or conversations. Provider processing remains subject to the provider you configure.
 
@@ -35,6 +37,8 @@ This project is independent and is not affiliated with or endorsed by Meta, Face
 - Inserts the result into the active chat composer and copies it to your clipboard by default.
 - Supports ordered provider and model fallbacks for temporary failures.
 - Stores provider keys and preferences only in local Chrome extension storage.
+
+![Skip the Yap! transcription modes and provider setup](store-assets/screenshots/03-modes.png)
 
 ## Install locally
 
@@ -59,8 +63,6 @@ See the [guided setup](docs/tutorials/getting-started.md) for provider-specific 
 
 ## Choose your provider
 
-![Provider setup panel](store-assets/screenshots/02-provider-setup.png)
-
 | Provider | Access model | Transcription | Cleaned / TL;DR | Request format |
 |---|---|---:|---:|---|
 | Gemini | Free tier and paid quotas | Yes | Yes | Base64 JSON |
@@ -74,8 +76,6 @@ See the [guided setup](docs/tutorials/getting-started.md) for provider-specific 
 Availability, quotas, pricing, model names, and provider retention rules are controlled by each provider and can change. Read the [provider reference](docs/reference/providers.md) before enabling fallbacks.
 
 ## Fallbacks you control
-
-![Ordered provider and model fallback settings](store-assets/screenshots/03-fallback-routing.png)
 
 The selected audio is captured and validated once. If a temporary provider or model failure occurs, the same payload can move through your configured fallback order without replaying or recapturing the message.
 
@@ -126,6 +126,8 @@ dist/                 generated release output; never committed
 ```
 
 ## Privacy and security
+
+![Skip the Yap! privacy and provider flow](store-assets/screenshots/04-privacy.png)
 
 - No extension account, analytics, advertising, or transcript history.
 - No API key ships with the extension.

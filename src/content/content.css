@@ -1,11 +1,12 @@
 .vt-transcribe-trigger {
+  --vt-control-size: 36px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 30px;
+  flex: 0 0 var(--vt-control-size);
   align-self: center;
-  width: 30px;
-  height: 30px;
+  width: var(--vt-control-size);
+  height: var(--vt-control-size);
   margin-inline: 8px;
   padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -39,7 +40,7 @@
 
 .vt-page-trigger.vt-anchor-outgoing {
   top: anchor(center) !important;
-  left: calc(anchor(left) - 30px - var(--vt-control-gap)) !important;
+  left: calc(anchor(left) - var(--vt-control-size) - var(--vt-control-gap)) !important;
   position-visibility: anchors-visible;
 }
 
@@ -51,8 +52,8 @@
 .vt-transcribe-trigger[data-state="loading"] { cursor: pointer; opacity: 0.82; }
 
 .vt-trigger-icon {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.6;

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07101f"/><stop offset="1" stop-color="#0d1830"/></linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2684ff"/><stop offset="1" stop-color="#4f46e5"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="20" stdDeviation="26" flood-color="#020617" flood-opacity=".55"/></filter>
+  </defs>
+  <rect width="1280" height="800" fill="url(#bg)"/>
+  <circle cx="110" cy="90" r="180" fill="#123a77" opacity=".22"/><circle cx="1180" cy="740" r="260" fill="#30268e" opacity=".16"/>
+  <g font-family="Segoe UI,Arial,sans-serif">
+    <rect x="72" y="64" width="170" height="38" rx="19" fill="#112846" stroke="#24548a"/><circle cx="96" cy="83" r="8" fill="#3b82f6"/><text x="116" y="90" fill="#bfdbfe" font-size="16" font-weight="700">MESSENGER</text>
+    <text x="72" y="180" fill="#f8fafc" font-size="52" font-weight="760">Voice notes,</text>
+    <text x="72" y="240" fill="#f8fafc" font-size="52" font-weight="760">now readable.</text>
+    <text x="72" y="300" fill="#a9b8cf" font-size="21">Click the blue mic beside a voice note.</text>
+    <text x="72" y="334" fill="#a9b8cf" font-size="21">The transcript lands in your chat box.</text>
+    <g transform="translate(72 416)">
+      <circle cx="18" cy="18" r="18" fill="#2563eb"/><path d="M12 18h12M20 12l6 6-6 6" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="52" y="15" fill="#f8fafc" font-size="18" font-weight="700">One click</text><text x="52" y="41" fill="#91a4bf" font-size="16">No extra window or upload flow.</text>
+    </g>
+    <g transform="translate(72 500)">
+      <circle cx="18" cy="18" r="18" fill="#2563eb"/><path d="M11 18l5 5 10-11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="52" y="15" fill="#f8fafc" font-size="18" font-weight="700">Ready to edit</text><text x="52" y="41" fill="#91a4bf" font-size="16">Review it, change it, then send.</text>
+    </g>
+    <text x="72" y="706" fill="#60a5fa" font-size="18" font-weight="700">Skip the Yap!</text><text x="198" y="706" fill="#64748b" font-size="18">Let them yap. You get the point.</text>
+    <g transform="translate(516 48)" filter="url(#shadow)">
+      <rect width="700" height="704" rx="30" fill="#0b1220" stroke="#263b5d" stroke-width="2"/>
+      <rect width="700" height="82" rx="30" fill="#111c2e"/><circle cx="42" cy="41" r="19" fill="url(#brand)"/><text x="76" y="49" fill="#f8fafc" font-size="22" font-weight="700">Alex</text><circle cx="646" cy="41" r="15" fill="#1d2b42"/><circle cx="604" cy="41" r="15" fill="#1d2b42"/>
+      <text x="34" y="132" fill="#7183a0" font-size="14">Today, 10:42</text>
+      <rect x="34" y="154" width="304" height="54" rx="27" fill="#1e293b"/><text x="58" y="188" fill="#e5e7eb" font-size="17">Can you send the details?</text>
+      <rect x="376" y="236" width="290" height="54" rx="27" fill="#2563eb"/><text x="404" y="270" fill="#fff" font-size="17">Sure, sending a voice note.</text>
+      <rect x="34" y="334" width="400" height="104" rx="28" fill="#202b3d" stroke="#35455f"/>
+      <circle cx="78" cy="386" r="23" fill="#f8fafc"/><path d="M72 374l18 12-18 12z" fill="#0f172a"/>
+      <g stroke="#dbeafe" stroke-width="5" stroke-linecap="round"><path d="M122 380v12M136 369v34M150 375v22M164 360v52M178 371v30M192 364v44M206 377v18M220 367v38M234 374v24M248 361v50M262 375v22M276 369v34M290 380v12"/></g>
+      <text x="352" y="393" fill="#e5e7eb" font-size="17" font-weight="700">0:21</text>
+      <circle cx="462" cy="386" r="24" fill="url(#brand)" stroke="#8ab7ff" stroke-width="2"/>
+      <g fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="456" y="371" width="12" height="20" rx="6"/><path d="M451 385v1a11 11 0 0 0 22 0v-1M462 397v6M456 403h12"/></g>
+      <rect x="34" y="518" width="632" height="70" rx="24" fill="#172235" stroke="#334155"/>
+      <text x="58" y="548" fill="#f1f5f9" font-size="16">Here are the details for tomorrow. Let's meet at 9:30,</text><text x="58" y="573" fill="#f1f5f9" font-size="16">and I'll bring the notes we discussed.</text>
+      <circle cx="630" cy="553" r="22" fill="#2563eb"/><path d="M621 553h17M632 545l8 8-8 8" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="34" y="620" width="290" height="40" rx="20" fill="#063e34" stroke="#10b981"/><text x="179" y="646" fill="#d1fae5" font-size="14" font-weight="700" text-anchor="middle">Transcript inserted into chat</text>
+    </g>
+  </g>
+</svg>

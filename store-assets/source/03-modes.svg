@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07101f"/><stop offset="1" stop-color="#17213a"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#020617" flood-opacity=".55"/></filter></defs>
+  <rect width="1280" height="800" fill="url(#bg)"/>
+  <g font-family="Segoe UI,Arial,sans-serif">
+    <g transform="translate(76 72)">
+      <text y="56" fill="#f8fafc" font-size="48" font-weight="760">Full transcript</text><text y="112" fill="#f8fafc" font-size="48" font-weight="760">or just the point.</text>
+      <text y="168" fill="#a9b8cf" font-size="20">Choose the result you need before you click.</text>
+      <g transform="translate(0 246)"><rect width="488" height="82" rx="18" fill="#173d77" stroke="#60a5fa" stroke-width="2"/><circle cx="42" cy="41" r="20" fill="#2563eb"/><text x="42" y="47" fill="#fff" font-size="16" text-anchor="middle">V</text><text x="80" y="35" fill="#fff" font-size="19" font-weight="700">Verbatim</text><text x="80" y="60" fill="#dbeafe" font-size="15">Every word, including slang and filler.</text></g>
+      <g transform="translate(0 344)"><rect width="488" height="82" rx="18" fill="#111c2f" stroke="#33445f"/><circle cx="42" cy="41" r="20" fill="#26364f"/><text x="42" y="47" fill="#dbeafe" font-size="16" text-anchor="middle">C</text><text x="80" y="35" fill="#f8fafc" font-size="19" font-weight="700">Cleaned</text><text x="80" y="60" fill="#91a4bf" font-size="15">Less filler, clearer punctuation.</text></g>
+      <g transform="translate(0 442)"><rect width="488" height="82" rx="18" fill="#111c2f" stroke="#33445f"/><circle cx="42" cy="41" r="20" fill="#26364f"/><text x="42" y="47" fill="#dbeafe" font-size="14" font-weight="700" text-anchor="middle">TL</text><text x="80" y="35" fill="#f8fafc" font-size="19" font-weight="700">TL;DR</text><text x="80" y="60" fill="#91a4bf" font-size="15">Key points and requests in 1–3 bullets.</text></g>
+      <text y="608" fill="#60a5fa" font-size="18" font-weight="700">Custom prompts are available where supported.</text>
+    </g>
+    <g transform="translate(684 48)" filter="url(#shadow)">
+      <rect width="492" height="716" rx="24" fill="#0e1727" stroke="#34445e"/>
+      <rect width="492" height="72" rx="24" fill="#111d30"/><text x="28" y="45" fill="#f8fafc" font-size="22" font-weight="700">Skip the Yap!</text><circle cx="446" cy="36" r="5" fill="#5ee9a4"/>
+      <rect x="22" y="92" width="448" height="306" rx="16" fill="#1a2638" stroke="#35455e"/>
+      <text x="40" y="126" fill="#f8fafc" font-size="16" font-weight="700">Transcription provider</text><rect x="40" y="142" width="412" height="46" rx="9" fill="#0c1626" stroke="#43536d"/><text x="56" y="171" fill="#eef4ff" font-size="15">Gemini — all modes</text><path d="M424 160l6 6 6-6" fill="none" stroke="#a9b8cf" stroke-width="2"/>
+      <text x="40" y="226" fill="#f8fafc" font-size="16" font-weight="700">Gemini API key</text><rect x="40" y="242" width="412" height="46" rx="9" fill="#0c1626" stroke="#43536d"/><text x="56" y="271" fill="#91a4bf" font-size="18">••••••••••••••••••••••••</text>
+      <rect x="40" y="306" width="412" height="46" rx="9" fill="#2563eb"/><text x="246" y="335" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Test Gemini</text>
+      <text x="40" y="378" fill="#8dd7ff" font-size="14">How to get a Gemini API key  ▾</text>
+      <text x="22" y="438" fill="#f8fafc" font-size="17" font-weight="700">Transcription mode</text>
+      <rect x="22" y="454" width="448" height="62" rx="11" fill="#21437a" stroke="#5ba0ff" stroke-width="2"/><text x="44" y="489" fill="#fff" font-size="15">●</text><text x="76" y="480" fill="#fff" font-size="15" font-weight="700">Verbatim</text><text x="76" y="500" fill="#dceaff" font-size="12">Exact wording, including slang and filler.</text><circle cx="444" cy="485" r="8" fill="#5ba0ff"/>
+      <rect x="22" y="526" width="448" height="62" rx="11" fill="#111d30" stroke="#34445e"/><text x="44" y="561" fill="#fff" font-size="15">✦</text><text x="76" y="552" fill="#fff" font-size="15" font-weight="700">Cleaned</text><text x="76" y="572" fill="#a9b8cf" font-size="12">Removes filler and improves punctuation.</text><circle cx="444" cy="557" r="8" fill="none" stroke="#8fa0b8"/>
+      <rect x="22" y="598" width="448" height="62" rx="11" fill="#111d30" stroke="#34445e"/><text x="44" y="633" fill="#fff" font-size="15">≡</text><text x="76" y="624" fill="#fff" font-size="15" font-weight="700">TL;DR</text><text x="76" y="644" fill="#a9b8cf" font-size="12">Summarizes the key points and requests.</text><circle cx="444" cy="629" r="8" fill="none" stroke="#8fa0b8"/>
+      <rect x="22" y="670" width="448" height="34" rx="10" fill="#1a2638" stroke="#34445e"/><text x="42" y="692" fill="#f8fafc" font-size="14" font-weight="700">Advanced settings</text><path d="M438 683l6 6 6-6" fill="none" stroke="#8fa0b8" stroke-width="2"/>
+    </g>
+  </g>
+</svg>
