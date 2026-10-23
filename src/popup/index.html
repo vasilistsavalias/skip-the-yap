@@ -109,43 +109,49 @@
 
     <!-- Advanced settings -->
     <section class="section advanced-section">
-      <div class="dev-mode-bar">
-        <div class="dev-mode-title-wrap">
-          <span class="dev-icon">↪</span>
+      <button type="button" class="advanced-toggle-btn" id="advancedSettingsToggle" aria-expanded="false" aria-controls="advancedSettingsContent">
+        <span class="dev-mode-title-wrap">
+          <span class="advanced-chevron" aria-hidden="true">›</span>
           <span class="dev-title">Advanced settings</span>
+        </span>
+      </button>
+
+      <div id="advancedSettingsContent" class="advanced-settings-content collapsed" aria-hidden="true" inert>
+        <div class="pref-row advanced-pref-row">
+          <span class="pref-title">Also copy to clipboard</span>
+          <label class="switch">
+            <input type="checkbox" id="autoCopyClipboard" aria-label="Automatically copy transcript to clipboard" checked>
+            <span class="slider"></span>
+          </label>
         </div>
-        <label class="switch small-switch" title="Enable provider fallback">
-          <input type="checkbox" id="fallbackEnabled" aria-label="Enable provider fallback" aria-expanded="false" aria-controls="fallbackContent">
-          <span class="slider"></span>
-        </label>
-      </div>
 
-      <div class="pref-row advanced-pref-row">
-        <span class="pref-title">Also copy to clipboard</span>
-        <label class="switch">
-          <input type="checkbox" id="autoCopyClipboard" aria-label="Automatically copy transcript to clipboard" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
-
-      <div id="fallbackContent" class="dev-content collapsed" aria-hidden="true" inert>
-        <div id="routingList" class="routing-list"></div>
-        <div class="add-provider-row">
-          <select id="fallbackProviderSelect" aria-label="Fallback provider"></select>
-          <button type="button" id="addFallbackBtn">＋ Add</button>
+        <div class="pref-row advanced-pref-row">
+          <span class="pref-title">Provider fallback</span>
+          <label class="switch" title="Enable provider fallback">
+            <input type="checkbox" id="fallbackEnabled" aria-label="Enable provider fallback" aria-expanded="false" aria-controls="fallbackContent">
+            <span class="slider"></span>
+          </label>
         </div>
-        <p class="field-hint">Providers and their checked models are tried from top to bottom. Authentication failures move to the next configured provider.</p>
 
-        <div class="form-item prompt-override">
-          <div class="form-item-header">
-            <label for="customPrompt">System prompt override</label>
-            <button type="button" class="reset-prompt-btn" id="resetPromptBtn">Reset</button>
+        <div id="fallbackContent" class="dev-content collapsed" aria-hidden="true" inert>
+          <div id="routingList" class="routing-list"></div>
+          <div class="add-provider-row">
+            <select id="fallbackProviderSelect" aria-label="Fallback provider"></select>
+            <button type="button" id="addFallbackBtn">＋ Add</button>
           </div>
-          <textarea id="customPrompt" rows="3" placeholder="Leave empty to use the selected transcription mode"></textarea>
-          <span class="field-hint">Only providers marked “All modes” can apply Cleaned, TL;DR, or a custom prompt.</span>
+          <p class="field-hint">Providers and their checked models are tried from top to bottom. Authentication failures move to the next configured provider.</p>
+
+          <div class="form-item prompt-override">
+            <div class="form-item-header">
+              <label for="customPrompt">System prompt override</label>
+              <button type="button" class="reset-prompt-btn" id="resetPromptBtn">Reset</button>
+            </div>
+            <textarea id="customPrompt" rows="3" placeholder="Leave empty to use the selected transcription mode"></textarea>
+            <span class="field-hint">Only providers marked “All modes” can apply Cleaned, TL;DR, or a custom prompt.</span>
+          </div>
         </div>
+        <button type="button" class="clear-data-btn" id="clearDataBtn">Clear saved keys and settings</button>
       </div>
-      <button type="button" class="clear-data-btn" id="clearDataBtn">Clear saved keys and settings</button>
     </section>
 
     <!-- Release Notes Modal -->

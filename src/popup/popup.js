@@ -24,7 +24,7 @@
   document.addEventListener("DOMContentLoaded", initialize);
 
   function initialize() {
-    for (const id of ["primaryProvider", "providerTierBadge", "providerApiKey", "providerKeyLabel", "providerCapability", "toggleVisibilityBtn", "toggleGuideBtn", "guideAccordion", "guideSteps", "guideLink", "apiStatusPill", "testApiKeyBtn", "fallbackEnabled", "fallbackContent", "routingList", "fallbackProviderSelect", "addFallbackBtn", "autoCopyClipboard", "customPrompt", "resetPromptBtn", "versionTag", "releaseNotesBtn", "releaseNotesModal", "releaseNotesCloseBtn", "releaseNotesVersion", "startTourBtn", "tourModal", "tourCloseBtn", "tourPrevBtn", "tourNextBtn", "clearDataBtn"]) {
+    for (const id of ["primaryProvider", "providerTierBadge", "providerApiKey", "providerKeyLabel", "providerCapability", "toggleVisibilityBtn", "toggleGuideBtn", "guideAccordion", "guideSteps", "guideLink", "apiStatusPill", "testApiKeyBtn", "advancedSettingsToggle", "advancedSettingsContent", "fallbackEnabled", "fallbackContent", "routingList", "fallbackProviderSelect", "addFallbackBtn", "autoCopyClipboard", "customPrompt", "resetPromptBtn", "versionTag", "releaseNotesBtn", "releaseNotesModal", "releaseNotesCloseBtn", "releaseNotesVersion", "startTourBtn", "tourModal", "tourCloseBtn", "tourPrevBtn", "tourNextBtn", "clearDataBtn"]) {
       elements[id] = document.getElementById(id);
     }
     const installedVersion = chrome.runtime.getManifest().version;
@@ -101,6 +101,7 @@
     elements.testApiKeyBtn.addEventListener("click", testApiKey);
     elements.toggleVisibilityBtn.addEventListener("click", toggleKeyVisibility);
     elements.toggleGuideBtn.addEventListener("click", toggleGuide);
+    elements.advancedSettingsToggle.addEventListener("click", toggleAdvancedSettings);
     elements.fallbackEnabled.addEventListener("change", () => {
       setFallbackMode(elements.fallbackEnabled.checked);
       save({ fallbackEnabled: elements.fallbackEnabled.checked });
@@ -419,6 +420,14 @@
     elements.toggleGuideBtn.setAttribute("aria-expanded", String(expanded));
     elements.guideAccordion.setAttribute("aria-hidden", String(!expanded));
     elements.guideAccordion.inert = !expanded;
+  }
+
+  function toggleAdvancedSettings() {
+    elements.advancedSettingsContent.classList.toggle("collapsed");
+    const expanded = !elements.advancedSettingsContent.classList.contains("collapsed");
+    elements.advancedSettingsToggle.setAttribute("aria-expanded", String(expanded));
+    elements.advancedSettingsContent.setAttribute("aria-hidden", String(!expanded));
+    elements.advancedSettingsContent.toggleAttribute("inert", !expanded);
   }
 
   async function save(values, callback) {

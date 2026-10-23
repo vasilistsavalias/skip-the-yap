@@ -11,7 +11,7 @@ All notable user-visible changes are documented here.
 ### Changed
 
 - The popup version now comes directly from the installed extension manifest.
-- The popup keeps routine setup details out of the main view, moves privacy details into the product tour, and groups clipboard and confirmed clear-data controls inside Advanced settings.
+- The popup keeps routine setup details out of the main view, moves privacy details into the product tour, and groups clipboard, provider fallback, and confirmed clear-data controls inside a collapsible Advanced settings panel.
 
 ### Fixed
 

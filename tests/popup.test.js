@@ -46,6 +46,16 @@ test("popup shows one dynamic provider editor and provider-specific guide", asyn
   assert.equal(document.querySelector(".prefs-section"), null);
   assert.equal(document.getElementById("autoCopyClipboard").closest(".advanced-section") !== null, true);
   assert.doesNotMatch(document.body.textContent, /Workflow Automation|Enabled by default|Try another provider/i);
+  const advancedContent = document.getElementById("advancedSettingsContent");
+  assert.equal(advancedContent.hasAttribute("inert"), true);
+  assert.equal(document.getElementById("advancedSettingsToggle").getAttribute("aria-expanded"), "false");
+  document.getElementById("advancedSettingsToggle").click();
+  assert.equal(advancedContent.hasAttribute("inert"), false);
+  assert.equal(document.getElementById("advancedSettingsToggle").getAttribute("aria-expanded"), "true");
+  assert.equal(document.getElementById("fallbackEnabled").closest("#advancedSettingsContent") !== null, true);
+  document.getElementById("advancedSettingsToggle").click();
+  assert.equal(advancedContent.hasAttribute("inert"), true);
+  assert.equal(document.getElementById("advancedSettingsToggle").getAttribute("aria-expanded"), "false");
   assert.equal(document.getElementById("providerKeyLabel").textContent, "Gemini API key");
   assert.equal(document.getElementById("statusIndicator"), null);
   assert.equal(document.getElementById("providerNote"), null);
@@ -78,6 +88,7 @@ test("popup shows one dynamic provider editor and provider-specific guide", asyn
 test("advanced fallback adds providers and exposes their model order", async () => {
   const { dom, stored } = await loadPopup({ geminiApiKey: "test-only-key" });
   const document = dom.window.document;
+  document.getElementById("advancedSettingsToggle").click();
   const toggle = document.getElementById("fallbackEnabled");
   toggle.checked = true;
   toggle.dispatchEvent(new dom.window.Event("change", { bubbles: true }));
