@@ -29,6 +29,15 @@ function captureTrustedTrigger(dom) {
   };
 }
 
+async function waitFor(predicate, timeoutMs = 4000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (predicate()) return;
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+  assert.fail(`Condition was not met within ${timeoutMs} ms.`);
+}
+
 test("a trusted Messenger trigger captures the selected voice note and starts transcription", async () => {
   const dom = new JSDOM(`
     <body>
@@ -153,7 +162,7 @@ test("a trusted Instagram trigger waits for a lazy-loaded voice-note source", as
   dom.window.eval(fs.readFileSync(path.join(extension, "content", "content-script.js"), "utf8"));
 
   triggerTrustedClick();
-  await new Promise((resolve) => setTimeout(resolve, 2500));
+  await waitFor(() => copiedTranscript === "instagram transcript");
 
   assert.equal(actions.includes("TRANSCRIBE_AUDIO"), true);
   assert.equal(dom.window.document.querySelector(".vt-transcript-card"), null);
