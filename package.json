@@ -9,7 +9,7 @@
     "check": "npm run lint && npm test && npm run build",
     "lint": "eslint src tests tools eslint.config.mjs",
     "package": "node tools/package.mjs",
-    "test": "node --test tests"
+    "test": "node tools/test.mjs"
   },
   "devDependencies": {
     "archiver": "^8.0.0",

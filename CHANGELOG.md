@@ -9,7 +9,7 @@ All notable user-visible changes are documented here.
 - Delayed Messenger composer updates no longer trigger a second transcript insertion.
 - Exact full-output provider repetitions are collapsed before delivery without changing normal short repetition.
 - Chrome Web Store copy no longer enumerates provider brands in a keyword-like list.
-- Release checks now scope tests to tracked extension tests and pin patched glob tooling.
+- Release checks now use a cross-platform runner scoped to tracked extension tests and pin patched glob tooling.
 
 ## [1.0.3] - 2026-10-23
 
