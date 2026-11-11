@@ -16,9 +16,7 @@ Skip the Yap! puts a transcription button next to supported voice notes in Messe
 
 The result is inserted into the active chat box automatically. You can also copy it to the clipboard.
 
-Bring your own API key:
-
-Choose Gemini, Groq, Hugging Face, OpenAI, xAI, ElevenLabs, or OpenRouter. There is no extension account and no developer-operated backend. The extension is free; your chosen provider may charge for API usage.
+Bring your own API key. Connect a supported transcription provider in the extension popup. There is no extension account and no developer-operated backend. The extension is free; your chosen provider may charge for API usage.
 
 What it does:
 
