@@ -34,6 +34,15 @@ test("sends the API key in a header and returns transcript text", async () => {
   assert.equal(requestedUrl.includes(settings.geminiApiKey), false);
 });
 
+test("collapses an exact repeated transcript before delivery", async () => {
+  const transcript = "This is a long enough transcript to identify an accidental full-output repeat safely.";
+  const result = await backgroundCore.transcribeAudio(
+    { base64Data: audio, mimeType: "audio/wav", settings },
+    { fetchImpl: async () => jsonResponse(200, { candidates: [{ content: { parts: [{ text: `${transcript}${transcript}` }] } }] }) }
+  );
+  assert.equal(result.text, transcript);
+});
+
 test("sends audio-only MP4 voice notes to Gemini with an audio MIME type", async () => {
   let requestedBody;
   const fetchImpl = async (url, options) => {

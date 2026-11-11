@@ -102,14 +102,21 @@ test("inserts into a textarea and verifies the resulting text", async () => {
   assert.equal(dom.window.document.querySelector("textarea").value, "Draft transcript");
 });
 
-test("uses a verified contenteditable fallback when execCommand fails", async () => {
+test("uses a verified contenteditable fallback when browser insertion is unavailable", async () => {
+  const dom = new JSDOM('<div role="textbox" data-lexical-editor="true" contenteditable="true" aria-label="Message">Draft</div>', { pretendToBeVisual: true });
+  const inserted = await contentCore.insertTranscript(dom.window.document, "transcript", { waitForPaint: async () => {} });
+  assert.equal(inserted, true);
+  assert.equal(dom.window.document.querySelector('[role="textbox"]').textContent, "Draft transcript");
+});
+
+test("does not run a second fallback after a browser insertion attempt", async () => {
   const dom = new JSDOM('<div role="textbox" data-lexical-editor="true" contenteditable="true" aria-label="Message">Draft</div>', { pretendToBeVisual: true });
   const inserted = await contentCore.insertTranscript(dom.window.document, "transcript", {
     execCommand: () => false,
     waitForPaint: async () => {}
   });
-  assert.equal(inserted, true);
-  assert.equal(dom.window.document.querySelector('[role="textbox"]').textContent, "Draft transcript");
+  assert.equal(inserted, false);
+  assert.equal(dom.window.document.querySelector('[role="textbox"]').textContent, "Draft");
 });
 
 test("does not duplicate text when execCommand inserts but reports failure", async () => {
@@ -127,6 +134,24 @@ test("does not duplicate text when execCommand inserts but reports failure", asy
 
   assert.equal(inserted, true);
   assert.equal(composer.textContent, "transcript");
+});
+
+test("waits for a delayed browser insertion instead of appending the transcript twice", async () => {
+  const dom = new JSDOM('<div role="textbox" data-lexical-editor="true" contenteditable="true" aria-label="Message">Draft</div>', { pretendToBeVisual: true });
+  const document = dom.window.document;
+  const composer = document.querySelector('[role="textbox"]');
+  const inserted = await contentCore.insertTranscript(document, "transcript", {
+    execCommand: (_command, _showUi, text) => {
+      queueMicrotask(() => {
+        if (composer.textContent === "Draft") composer.textContent += text;
+        else composer.append(document.createTextNode(text));
+      });
+      return false;
+    },
+    waitForPaint: () => new Promise((resolve) => setTimeout(resolve, 0))
+  });
+  assert.equal(inserted, true);
+  assert.equal(composer.textContent, "Draft transcript");
 });
 
 test("mounts a transcription button after Messenger hydrates a voice note in stages", async () => {

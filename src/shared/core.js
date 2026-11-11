@@ -188,6 +188,18 @@
     return RETRYABLE_STATUS_CODES.has(Number(status));
   }
 
+  function collapseExactRepeatedOutput(value) {
+    const text = String(value || "").trim();
+    if (text.length < 80) return text;
+    const midpoint = Math.floor(text.length / 2);
+    for (let split = Math.max(1, midpoint - 2); split <= Math.min(text.length - 1, midpoint + 2); split += 1) {
+      const first = text.slice(0, split).trimEnd();
+      const second = text.slice(split).trimStart();
+      if (first.length >= 40 && first === second) return first;
+    }
+    return text;
+  }
+
   function getPrompt(settings) {
     const customPrompt = String(settings.customPrompt || "").trim();
     if (customPrompt) return customPrompt.slice(0, 4000);
@@ -210,6 +222,7 @@
     SUPPORTED_AUDIO_MIME_TYPES,
     buildModelOrder,
     buildProviderModelOrder,
+    collapseExactRepeatedOutput,
     createRequestId,
     detectAudioMimeType,
     estimateBase64Bytes,

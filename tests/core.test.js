@@ -2,6 +2,12 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const core = require("../src/shared/core.js");
 
+test("collapses one exact repeated provider result without touching short speech", () => {
+  const transcript = "This is a long enough transcript to identify an accidental full-output repeat safely.";
+  assert.equal(core.collapseExactRepeatedOutput(`${transcript}${transcript}`), transcript);
+  assert.equal(core.collapseExactRepeatedOutput("yes yes"), "yes yes");
+});
+
 test("allows only HTTPS media hosts used by supported chat sites", () => {
   assert.equal(core.isAllowedMediaUrl("https://video.xx.fbcdn.net/audio.m4a"), true);
   assert.equal(core.isAllowedMediaUrl("https://facebook.com.evil.example/audio.m4a"), false);

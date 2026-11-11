@@ -2,6 +2,13 @@
 
 All notable user-visible changes are documented here.
 
+## [Unreleased]
+
+### Fixed
+
+- Delayed Messenger composer updates no longer trigger a second transcript insertion.
+- Exact full-output provider repetitions are collapsed before delivery without changing normal short repetition.
+
 ## [1.0.3] - 2026-10-23
 
 ### Added

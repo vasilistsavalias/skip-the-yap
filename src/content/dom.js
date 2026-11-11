@@ -199,10 +199,13 @@
     const before = composerText(composer);
     const prefix = before && !/\s$/.test(before) ? " " : "";
     const insertion = `${prefix}${transcript}`;
+    const waitForPaint = options.waitForPaint || (() => new Promise((resolve) => setTimeout(resolve, 0)));
+    let expected;
 
     if ("value" in composer) {
       const start = wasActive && Number.isInteger(composer.selectionStart) ? composer.selectionStart : composer.value.length;
       const end = wasActive && Number.isInteger(composer.selectionEnd) ? composer.selectionEnd : start;
+      expected = before.slice(0, start) + insertion + before.slice(end);
       composer.setRangeText(insertion, start, end, "end");
       dispatchInput(composer, insertion);
     } else {
@@ -216,16 +219,18 @@
       }
 
       const execCommand = options.execCommand || documentObject.execCommand?.bind(documentObject);
-      if (execCommand) execCommand("insertText", false, insertion);
-      if (!composerText(composer).includes(transcript)) {
-        composer.append(documentObject.createTextNode(insertion));
-        dispatchInput(composer, insertion);
+      expected = before + insertion;
+      if (execCommand) {
+        try { execCommand("insertText", false, insertion); } catch { /* Verification below decides success. */ }
+        await waitForPaint();
+        return composerText(composer) === expected;
       }
+      composer.append(documentObject.createTextNode(insertion));
+      dispatchInput(composer, insertion);
     }
 
-    const waitForPaint = options.waitForPaint || (() => new Promise((resolve) => setTimeout(resolve, 0)));
     await waitForPaint();
-    return composerText(composer).includes(transcript);
+    return composerText(composer) === expected;
   }
 
   return {

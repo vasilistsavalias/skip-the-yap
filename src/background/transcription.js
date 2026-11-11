@@ -571,15 +571,17 @@
         continue;
       }
       try {
+        let result;
         if (provider === "gemini") {
           const sharedFallback = providers.length > 1;
-          return await transcribeWithGemini(preparedInput, dependencies, sharedFallback ? { deadlineMs: 25000, passes: 1 } : {});
+          result = await transcribeWithGemini(preparedInput, dependencies, sharedFallback ? { deadlineMs: 25000, passes: 1 } : {});
         }
-        if (provider === "groq") return await transcribeWithGroq(preparedInput, dependencies);
-        if (provider === "elevenlabs") return await transcribeWithElevenLabs(preparedInput, dependencies);
-        if (provider === "openai" || provider === "openrouter") return await transcribeWithOpenAiCompatible(preparedInput, provider, dependencies);
-        if (provider === "xai") return await transcribeWithXai(preparedInput, dependencies);
-        if (provider === "huggingface") return await transcribeWithHuggingFace(preparedInput, dependencies);
+        if (provider === "groq") result = await transcribeWithGroq(preparedInput, dependencies);
+        if (provider === "elevenlabs") result = await transcribeWithElevenLabs(preparedInput, dependencies);
+        if (provider === "openai" || provider === "openrouter") result = await transcribeWithOpenAiCompatible(preparedInput, provider, dependencies);
+        if (provider === "xai") result = await transcribeWithXai(preparedInput, dependencies);
+        if (provider === "huggingface") result = await transcribeWithHuggingFace(preparedInput, dependencies);
+        if (result) return { ...result, text: core.collapseExactRepeatedOutput(result.text) };
       } catch (error) {
         if (input.signal?.aborted) throw error;
         if (!isRetryableRequestError(error) && ![401, 403].includes(error?.status)) throw error;
