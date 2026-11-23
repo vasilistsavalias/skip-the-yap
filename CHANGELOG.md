@@ -2,6 +2,20 @@
 
 All notable user-visible changes are documented here.
 
+## [1.0.5] - 2026-11-24
+
+### Added
+
+- Compatible model discovery from provider-owned model endpoints during connection testing.
+- Exact custom model IDs in Advanced fallback for newly released compatible models.
+- Gemini 4 Hydrogen, Neon, Carbon, and Argon support.
+
+### Changed
+
+- Made Gemini 4 Hydrogen the default transcription model.
+- Removed deprecated and approaching-retirement Gemini models from the built-in cascade.
+- Migrated untouched previous defaults while preserving user-customized model orders.
+
 ## [1.0.4] - 2026-11-11
 
 ### Fixed

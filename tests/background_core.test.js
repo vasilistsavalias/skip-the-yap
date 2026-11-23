@@ -346,6 +346,23 @@ test("provider key tests use provider-specific authentication", async () => {
   assert.equal(requests[1].headers["xi-api-key"], "eleven-key");
 });
 
+test("provider model discovery filters for transcription-compatible models", async () => {
+  assert.deepEqual(backgroundCore.parseProviderModels("gemini", { models: [
+    { name: "models/gemini-5-hydrogen", supportedGenerationMethods: ["generateContent"] },
+    { name: "models/gemini-5-image", supportedGenerationMethods: ["generateContent"] }
+  ] }), ["gemini-5-hydrogen"]);
+  assert.deepEqual(backgroundCore.parseProviderModels("openai", { data: [{ id: "gpt-6-mini" }, { id: "gpt-6-transcribe" }] }), ["gpt-6-transcribe"]);
+
+  let request;
+  const models = await backgroundCore.discoverProviderModels({ provider: "gemini", apiKey: "gemini-key", fetchImpl: async (url, options) => {
+    request = { url, options };
+    return jsonResponse(200, { models: [{ name: "models/gemini-5-hydrogen", supportedGenerationMethods: ["generateContent"] }] });
+  } });
+  assert.deepEqual(models, ["gemini-5-hydrogen"]);
+  assert.equal(request.options.headers["x-goog-api-key"], "gemini-key");
+  assert.equal(request.url.includes("gemini-key"), false);
+});
+
 test("OpenAI-compatible providers share normalized multipart audio with separate model lists", async () => {
   const requests = [];
   const fetchImpl = async (url, options) => {

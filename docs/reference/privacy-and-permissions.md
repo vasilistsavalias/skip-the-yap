@@ -25,6 +25,7 @@ The [Privacy Policy](../../PRIVACY.md) is the controlling public statement. This
 | Selected voice-note audio | Supported chat page | Selected provider and configured fallbacks | Not retained after the request |
 | Transcript | Provider response | In-page card, optional composer, optional clipboard | Not stored by the extension |
 | Preferences | Popup controls | Chrome local extension storage | Until cleared or removed |
+| Provider model IDs | Provider model endpoint or exact user input | Chrome local extension storage | Until refreshed, cleared, or removed |
 | Media URL | Selected chat request | Service worker download | Request-scoped only; not logged or stored |
 
 Third-party providers process data under their own API terms and privacy policies. The extension developer has no backend and does not receive these requests.

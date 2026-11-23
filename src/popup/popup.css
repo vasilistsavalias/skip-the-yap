@@ -220,8 +220,12 @@ textarea:focus-visible,
 .model-details summary, .fallback-key-details summary { cursor: pointer; color: var(--accent-strong); font-size: 11px; }
 .model-list { display: grid; gap: 5px; margin-top: 7px; }
 .model-row { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 5px; }
+.model-name { min-width: 0; display: grid; }
 .model-row code { min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-size: 9px; }
+.model-name small { color: var(--muted); font-size: 8px; }
 .model-row button { padding: 1px 5px; }
+.custom-model-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px; margin-top: 3px; }
+.custom-model-row input { min-width: 0; padding: 5px 7px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); font-size: 9px; }
 .add-provider-row { display: grid; grid-template-columns: 1fr auto; gap: 7px; }
 .add-provider-row select { min-width: 0; padding: 7px; border: 1px solid var(--border); border-radius: 8px; background: var(--background); color: var(--text); }
 #addFallbackBtn { padding-inline: 10px; font-weight: 700; }

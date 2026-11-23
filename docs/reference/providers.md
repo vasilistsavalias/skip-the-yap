@@ -6,7 +6,7 @@ audience: Users and contributors
 reader_goal: Compare supported providers and exact runtime behavior
 source_of_truth: false
 status: stable
-last_verified: 2026-10-19
+last_verified: 2026-11-24
 canonical_sources:
   - ../../src/shared/core.js
   - ../../src/background/transcription.js
@@ -19,9 +19,11 @@ rag_index: true
 
 Provider availability, pricing, free allowances, retention policies, and model catalogs are external contracts. Confirm them in the linked official documentation before each release.
 
+Testing a provider refreshes compatible models from its provider-owned catalog where a model-list endpoint exists. Only model IDs are cached locally. Advanced fallback also accepts an exact model ID, so compatible releases can be used without waiting for a new extension package. Built-in models remain the tested fallback when discovery is unavailable.
+
 | Provider | Configured models | Modes | Transport | Key test |
 |---|---|---|---|---|
-| Gemini | Ordered multimodal Flash cascade | Verbatim, Cleaned, TL;DR, custom | `generateContent` with inline base64 audio | Small text-only generation request |
+| Gemini | Ordered multimodal cascade led by `gemini-4-hydrogen` | Verbatim, Cleaned, TL;DR, custom | `generateContent` with inline base64 audio | Small text-only generation request |
 | Groq | `whisper-large-v3-turbo`, `whisper-large-v3` | All modes; processed modes use a Groq text model | Multipart | Models endpoint |
 | Hugging Face | `openai/whisper-large-v3-turbo`, `openai/whisper-large-v3` | Verbatim | Raw bytes | Account identity endpoint |
 | OpenAI | `gpt-4o-mini-transcribe`, `gpt-4o-transcribe`, `whisper-1` | Verbatim | Multipart | Models endpoint |

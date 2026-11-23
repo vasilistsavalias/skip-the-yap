@@ -18,6 +18,7 @@
   let primaryProvider = "gemini";
   let fallbackProviders = [];
   let providerModels = {};
+  let providerCatalogs = {};
   let clearConfirmationTimer;
   let currentTourSlide = 0;
 
@@ -35,7 +36,7 @@
   }
 
   function storageDefaults() {
-    const defaults = { primaryProvider: "", fallbackEnabled: false, fallbackProviders: [], providerModels: {}, providerMode: "gemini", transcribeMode: "verbatim", autoCopyClipboard: true, customPrompt: "", hasSeenTour: false };
+    const defaults = { primaryProvider: "", fallbackEnabled: false, fallbackProviders: [], providerModels: {}, providerCatalogs: {}, providerMode: "gemini", transcribeMode: "verbatim", autoCopyClipboard: true, customPrompt: "", hasSeenTour: false };
     for (const info of Object.values(providerInfo)) defaults[info.key] = "";
     return defaults;
   }
@@ -48,7 +49,8 @@
       }
       primaryProvider = settings.primaryProvider ? core.normalizeProvider(settings.primaryProvider) : core.resolveProviderOrder(settings)[0] || "gemini";
       fallbackProviders = settings.primaryProvider ? sanitizeFallbacks(settings.fallbackProviders) : core.resolveProviderOrder(settings).slice(1);
-      providerModels = normalizeProviderModels(settings.providerModels, settings.preferredModel);
+      providerCatalogs = normalizeProviderCatalogs(settings.providerCatalogs);
+      providerModels = normalizeProviderModels(settings.providerModels, settings.preferredModel, providerCatalogs);
       elements.primaryProvider.value = primaryProvider;
       elements.fallbackEnabled.checked = Boolean(settings.primaryProvider ? settings.fallbackEnabled : fallbackProviders.length);
       elements.autoCopyClipboard.checked = settings.autoCopyClipboard;
@@ -57,14 +59,20 @@
       setActiveMode(settings.transcribeMode);
       renderProvider();
       renderRouting();
-      save({ primaryProvider, fallbackEnabled: elements.fallbackEnabled.checked, fallbackProviders, providerModels });
+      save({ primaryProvider, fallbackEnabled: elements.fallbackEnabled.checked, fallbackProviders, providerModels, providerCatalogs });
       if (!settings.hasSeenTour) openTour();
     });
   }
 
-  function normalizeProviderModels(saved, oldPreferredModel) {
+  function normalizeProviderCatalogs(saved = {}) {
     const result = {};
-    for (const provider of core.PROVIDERS) result[provider] = core.buildProviderModelOrder(provider, saved?.[provider]);
+    for (const provider of core.PROVIDERS) result[provider] = [...new Set((Array.isArray(saved?.[provider]) ? saved[provider] : []).map(core.normalizeModelId).filter(Boolean))].slice(0, 40);
+    return result;
+  }
+
+  function normalizeProviderModels(saved, oldPreferredModel, catalogs = providerCatalogs) {
+    const result = {};
+    for (const provider of core.PROVIDERS) result[provider] = core.buildProviderModelOrder(provider, saved?.[provider], catalogs[provider]);
     if (!saved?.gemini && oldPreferredModel && oldPreferredModel !== "auto" && core.MODEL_CASCADE.includes(oldPreferredModel)) result.gemini = core.buildModelOrder(oldPreferredModel);
     return result;
   }
@@ -178,7 +186,8 @@
     const info = providerInfo[provider];
     const card = document.createElement("article");
     const enabledModels = providerModels[provider] || [...core.PROVIDER_MODELS[provider]];
-    const models = [...enabledModels, ...core.PROVIDER_MODELS[provider].filter((model) => !enabledModels.includes(model))];
+    const discovered = providerCatalogs[provider] || [];
+    const models = [...new Set([...enabledModels, ...core.PROVIDER_MODELS[provider], ...discovered])];
     card.className = "route-card";
     card.dataset.provider = provider;
 
@@ -232,9 +241,14 @@
       input.checked = checked;
       input.dataset.model = model;
       input.setAttribute("aria-label", `Enable ${model}`);
+      const name = document.createElement("span");
+      name.className = "model-name";
       const code = document.createElement("code");
       code.textContent = model;
-      row.append(input, code);
+      const source = document.createElement("small");
+      source.textContent = core.PROVIDER_MODELS[provider].includes(model) ? "Tested" : discovered.includes(model) ? "Available or custom" : "Custom";
+      name.append(code, source);
+      row.append(input, name);
       for (const [action, text, direction, disabled] of [
         ["model-up", "↑", "up", !checked || modelIndex === 0],
         ["model-down", "↓", "down", !checked || modelIndex >= enabledModels.length - 1]
@@ -250,6 +264,13 @@
       }
       modelList.append(row);
     }
+    const customRow = document.createElement("div");
+    customRow.className = "custom-model-row";
+    const customInput = document.createElement("input");
+    customInput.type = "text"; customInput.maxLength = 160; customInput.placeholder = "Add exact model ID"; customInput.dataset.customModel = provider;
+    const customButton = document.createElement("button");
+    customButton.type = "button"; customButton.dataset.action = "add-model"; customButton.textContent = "＋ Add";
+    customRow.append(customInput, customButton); modelList.append(customRow);
     details.append(summary, modelList);
     card.append(head, actions, details);
     if (index > 0) card.append(createFallbackKeyEditor(provider));
@@ -302,6 +323,13 @@
       testFallbackProvider(provider, button);
       return;
     }
+    if (action === "add-model") {
+      const model = core.normalizeModelId(card.querySelector("input[data-custom-model]").value);
+      if (!model) return;
+      providerCatalogs[provider] = [...new Set([...(providerCatalogs[provider] || []), model])];
+      providerModels[provider] = core.buildProviderModelOrder(provider, [...providerModels[provider], model], providerCatalogs[provider]);
+      renderRouting(); save({ providerCatalogs, providerModels }); return;
+    }
     if (action === "remove") fallbackProviders = fallbackProviders.filter((item) => item !== provider);
     if (action === "up" || action === "down") {
       const current = fallbackProviders.indexOf(provider);
@@ -350,6 +378,11 @@
       await requestProviderPermission(provider);
       await chrome.storage.local.set({ [providerInfo[provider].key]: apiKey });
       const result = await chrome.runtime.sendMessage({ action: "TEST_API_KEY", provider, apiKey });
+      if (result?.success && Array.isArray(result.models)) {
+        providerCatalogs[provider] = normalizeProviderCatalogs({ [provider]: result.models })[provider];
+        providerModels[provider] = core.buildProviderModelOrder(provider, providerModels[provider], providerCatalogs[provider]);
+        await save({ providerCatalogs, providerModels }); renderRouting();
+      }
       connectionStates[provider] = { type: result?.success ? "valid" : "invalid", message: result?.success ? "Connected" : result?.error || "Connection failed" };
       button.textContent = result?.success ? "Connected ✓" : "Failed";
     } catch (error) {
@@ -389,7 +422,13 @@
       await requestProviderPermission(provider);
       await chrome.storage.local.set({ [providerInfo[provider].key]: value });
       const result = await chrome.runtime.sendMessage({ action: "TEST_API_KEY", provider, apiKey: value });
-      connectionStates[provider] = { type: result?.success ? "valid" : "invalid", message: result?.success ? "Connected" : result?.error || "Connection failed" };
+      if (result?.success && Array.isArray(result.models)) {
+        providerCatalogs[provider] = normalizeProviderCatalogs({ [provider]: result.models })[provider];
+        providerModels[provider] = core.buildProviderModelOrder(provider, providerModels[provider], providerCatalogs[provider]);
+        await save({ providerCatalogs, providerModels });
+      }
+      const count = providerCatalogs[provider]?.length || 0;
+      connectionStates[provider] = { type: result?.success ? "valid" : "invalid", message: result?.success ? count ? `Connected · ${count} compatible models found` : "Connected · using tested models" : result?.error || "Connection failed" };
     } catch (error) {
       connectionStates[provider] = { type: "invalid", message: error.message };
     } finally {
@@ -456,6 +495,7 @@
       keyValues[provider] = "";
       connectionStates[provider] = { type: "info", message: "Not configured" };
       providerModels[provider] = [...core.PROVIDER_MODELS[provider]];
+      providerCatalogs[provider] = [];
     }
     primaryProvider = "gemini";
     fallbackProviders = [];

@@ -5,6 +5,7 @@
   <p>Turn Messenger and Instagram voice notes into transcripts, cleaned-up text, or a quick TL;DR with one click.</p>
   <p><strong>Transcribe · Clean up · Summarize</strong></p>
   <p>Privacy first · Your key, your provider · Open source</p>
+  <p><a href="https://chromewebstore.google.com/detail/skip-the-yap/pemnjegaecboifkcglcglokdinegfidf"><strong>Install from the Chrome Web Store</strong></a></p>
 </div>
 
 <p align="center">

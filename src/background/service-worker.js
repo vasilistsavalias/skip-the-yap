@@ -81,7 +81,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const controller = new AbortController();
     activeTranscriptions.set(requestId, controller);
     chrome.storage.local.get([
-      "primaryProvider", "fallbackEnabled", "fallbackProviders", "providerModels", "providerMode",
+      "primaryProvider", "fallbackEnabled", "fallbackProviders", "providerModels", "providerCatalogs", "providerMode",
       "geminiApiKey", "groqApiKey", "huggingfaceApiKey", "openaiApiKey", "xaiApiKey",
       "elevenLabsApiKey", "openrouterApiKey", "preferredModel", "customPrompt", "transcribeMode"
     ])
@@ -104,17 +104,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === "TEST_API_KEY") {
-    chrome.storage.local.get(["preferredModel", "providerModels"])
+    chrome.storage.local.get(["preferredModel", "providerModels", "providerCatalogs"])
       .then((settings) => backgroundCore.testProviderApiKey({
         provider: request.provider || "gemini",
         models: core.buildProviderModelOrder(
           request.provider || "gemini",
-          settings.providerModels?.[request.provider || "gemini"] || core.buildModelOrder(settings.preferredModel)
+          settings.providerModels?.[request.provider || "gemini"] || core.buildModelOrder(settings.preferredModel),
+          settings.providerCatalogs?.[request.provider || "gemini"]
         ),
         apiKey: String(request.apiKey || "").trim(),
         fetchImpl: fetch
       }))
-      .then(() => sendResponse({ success: true }))
+      .then(async () => {
+        try {
+          const models = await backgroundCore.discoverProviderModels({ provider: request.provider || "gemini", apiKey: String(request.apiKey || "").trim(), fetchImpl: fetch });
+          sendResponse({ success: true, models });
+        } catch (error) {
+          sendResponse({ success: true, models: [], discoveryError: error.message });
+        }
+      })
       .catch((error) => sendResponse({ success: false, error: error.message }));
     return true;
   }

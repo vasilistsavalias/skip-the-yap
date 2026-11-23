@@ -111,6 +111,22 @@ test("advanced fallback adds providers and exposes their model order", async () 
   assert.equal(stored.groqApiKey, "test-only-groq-key");
 });
 
+test("provider testing stores discovered models and exact custom IDs", async () => {
+  const { dom, stored, setConnectionResult } = await loadPopup({ geminiApiKey: "test-only-key" });
+  const document = dom.window.document;
+  setConnectionResult({ success: true, models: ["gemini-5-hydrogen"] });
+  document.getElementById("testApiKeyBtn").click();
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.deepEqual(Array.from(stored.providerCatalogs.gemini), ["gemini-5-hydrogen"]);
+  assert.match(document.querySelector('[data-provider="gemini"] .model-details').textContent, /gemini-5-hydrogen/);
+
+  const custom = document.querySelector('[data-provider="gemini"] input[data-custom-model]');
+  custom.value = "gemini-5-custom";
+  custom.nextElementSibling.click();
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(Array.from(stored.providerModels.gemini).includes("gemini-5-custom"), true);
+});
+
 test("popup migrates old Auto routing and clears local data deliberately", async () => {
   const { dom, stored } = await loadPopup({ providerMode: "auto", geminiApiKey: "test-only-key", groqApiKey: "test-only-groq-key" });
   const document = dom.window.document;

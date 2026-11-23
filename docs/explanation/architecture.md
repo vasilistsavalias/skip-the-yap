@@ -50,7 +50,7 @@ The capture window is request-scoped and tab-scoped. URLs outside the approved M
 
 ## Provider routing
 
-The primary provider is always first. Advanced fallback appends the user's ordered providers. Each provider has an ordered model allowlist controlled by `src/shared/core.js`; arbitrary model strings from storage are discarded.
+The primary provider is always first. Advanced fallback appends the user's ordered providers. Each provider starts with a tested model list from `src/shared/core.js`. Connection testing can add compatible IDs returned by the provider's own model endpoint, and users can add an exact ID. Every stored ID is syntax-validated and bounded before it can enter routing.
 
 The validated audio is prepared lazily:
 

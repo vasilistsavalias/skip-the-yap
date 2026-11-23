@@ -6,7 +6,7 @@ audience: Maintainers
 reader_goal: Revalidate external policies and API contracts
 source_of_truth: false
 status: stable
-last_verified: 2026-10-19
+last_verified: 2026-11-24
 rag_index: true
 ---
 
@@ -26,7 +26,7 @@ This is a verification index, not a substitute for the providers' live documenta
 
 ## Provider APIs
 
-- Gemini: [models](https://ai.google.dev/gemini-api/docs/models), [audio understanding](https://ai.google.dev/gemini-api/docs/audio), [dedicated transcription](https://ai.google.dev/gemini-api/docs/transcribe)
+- Gemini: [models](https://ai.google.dev/gemini-api/docs/models), [Models API](https://aistudio.google.com/api-reference/models), [audio understanding](https://ai.google.dev/gemini-api/docs/audio), [dedicated transcription](https://ai.google.dev/gemini-api/docs/transcribe)
 - Groq: [speech to text](https://console.groq.com/docs/speech-to-text), [rate limits](https://console.groq.com/docs/rate-limits)
 - Hugging Face: [automatic speech recognition](https://huggingface.co/docs/inference-providers/tasks/automatic-speech-recognition), [HF Inference](https://huggingface.co/docs/inference-providers/providers/hf-inference)
 - OpenAI: [audio transcription API](https://platform.openai.com/docs/api-reference/audio/createTranscription)

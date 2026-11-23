@@ -11,14 +11,26 @@
   ]);
   const PROVIDERS = Object.freeze(["gemini", "groq", "huggingface", "openai", "xai", "elevenlabs", "openrouter"]);
   const MODEL_CASCADE = Object.freeze([
+    "gemini-4-hydrogen",
+    "gemini-4-neon",
+    "gemini-4-carbon",
+    "gemini-4-argon",
     "gemini-3.8-flash",
-    "gemini-2.5-flash",
-    "gemini-2.5-flash-lite",
-    "gemini-3.7-flash",
-    "gemini-3.6-flash",
     "gemini-3.5-flash",
     "gemini-3.5-flash-lite",
     "gemini-3.1-flash-lite"
+  ]);
+  const PREVIOUS_GEMINI_MODEL_CASCADES = Object.freeze([
+    Object.freeze([
+      "gemini-3.8-flash",
+      "gemini-2.5-flash",
+      "gemini-2.5-flash-lite",
+      "gemini-3.7-flash",
+      "gemini-3.6-flash",
+      "gemini-3.5-flash",
+      "gemini-3.5-flash-lite",
+      "gemini-3.1-flash-lite"
+    ])
   ]);
   const PROVIDER_MODELS = Object.freeze({
     gemini: MODEL_CASCADE,
@@ -162,10 +174,22 @@
     return PROVIDERS.includes(value) ? value : "gemini";
   }
 
-  function buildProviderModelOrder(provider, configuredModels) {
-    const defaults = PROVIDER_MODELS[normalizeProvider(provider)] || [];
+  function normalizeModelId(value) {
+    const model = String(value || "").trim();
+    if (!/^[A-Za-z0-9][A-Za-z0-9._:/-]{0,159}$/.test(model) || model.includes("..") || model.includes("://")) return "";
+    return model;
+  }
+
+  function buildProviderModelOrder(provider, configuredModels, discoveredModels = []) {
+    const normalizedProvider = normalizeProvider(provider);
+    const defaults = PROVIDER_MODELS[normalizedProvider] || [];
     if (!Array.isArray(configuredModels)) return [...defaults];
-    const selected = configuredModels.filter((model, index) => defaults.includes(model) && configuredModels.indexOf(model) === index);
+    if (normalizedProvider === "gemini" && PREVIOUS_GEMINI_MODEL_CASCADES.some((models) =>
+      models.length === configuredModels.length && models.every((model, index) => model === configuredModels[index]))) {
+      return [...defaults];
+    }
+    const available = new Set([...defaults, ...(Array.isArray(discoveredModels) ? discoveredModels.map(normalizeModelId).filter(Boolean) : [])]);
+    const selected = configuredModels.map(normalizeModelId).filter((model, index, values) => available.has(model) && values.indexOf(model) === index).slice(0, 12);
     return selected.length ? selected : [...defaults];
   }
 
@@ -232,6 +256,7 @@
     isRetryableStatus,
     looksLikeMediaUrl,
     normalizeMimeType,
+    normalizeModelId,
     normalizeProvider,
     normalizeProviderMode,
     resolveProviderOrder,

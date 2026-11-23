@@ -182,7 +182,7 @@
     const timer = setTimeout(abortForTimeout, timeoutMs);
     try {
       const response = await fetchImpl(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
         {
           method: "POST",
           headers: {
@@ -254,7 +254,7 @@
       }, Math.min(timeoutMs, remaining));
       try {
         const response = await fetchImpl(
-          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json", "x-goog-api-key": key },
@@ -349,7 +349,7 @@
     const apiKey = String(input.settings?.groqApiKey || "").trim();
     if (!apiKey) throw new Error("Add your Groq API key in the extension popup first.");
     const prepared = prepareAudio(input, true);
-    const models = core.buildProviderModelOrder("groq", input.settings?.providerModels?.groq);
+    const models = core.buildProviderModelOrder("groq", input.settings?.providerModels?.groq, input.settings?.providerCatalogs?.groq);
     let lastError;
     let transcript;
     let modelUsed;
@@ -390,7 +390,7 @@
         method: "POST",
         headers: { "xi-api-key": apiKey },
         body: createAudioForm(prepared.audioBlob, prepared.validatedAudio.mimeType, {
-          model_id: core.buildProviderModelOrder("elevenlabs", settings.providerModels?.elevenlabs)[0],
+          model_id: core.buildProviderModelOrder("elevenlabs", settings.providerModels?.elevenlabs, settings.providerCatalogs?.elevenlabs)[0],
           tag_audio_events: "false",
           diarize: "false"
         })
@@ -422,7 +422,7 @@
       throw new ProviderRequestError(`${provider === "openai" ? "OpenAI" : "OpenRouter"} supports Verbatim mode in this extension. Choose Verbatim or use Gemini/Groq for processed text.`, 422);
     }
     const prepared = prepareAudio(input, true);
-    const models = core.buildProviderModelOrder(provider, settings.providerModels?.[provider]);
+    const models = core.buildProviderModelOrder(provider, settings.providerModels?.[provider], settings.providerCatalogs?.[provider]);
     let lastError;
     for (const model of models) {
       try {
@@ -477,7 +477,7 @@
       throw new ProviderRequestError("Hugging Face supports Verbatim mode in this extension. Choose Verbatim or use Gemini/Groq for processed text.", 422);
     }
     const prepared = prepareAudio(input, true);
-    const models = core.buildProviderModelOrder("huggingface", settings.providerModels?.huggingface);
+    const models = core.buildProviderModelOrder("huggingface", settings.providerModels?.huggingface, settings.providerCatalogs?.huggingface);
     let lastError;
     for (const model of models) {
       try {
@@ -507,7 +507,7 @@
     if (!apiKey) throw new Error("Add your Gemini API key in the extension popup first.");
 
     const prepared = prepareAudio(input);
-    const models = core.buildProviderModelOrder("gemini", settings.providerModels?.gemini || core.buildModelOrder(settings.preferredModel));
+    const models = core.buildProviderModelOrder("gemini", settings.providerModels?.gemini || core.buildModelOrder(settings.preferredModel), settings.providerCatalogs?.gemini);
     const deadlineMs = options.deadlineMs || 45000;
     const passes = options.passes || 2;
     const deadline = now() + deadlineMs;
@@ -616,6 +616,43 @@
     return true;
   }
 
+  const NON_TRANSCRIPTION_MODEL = /(?:computer-use|deep-research|decision|embedding|image|live|moderation|realtime|robotics|search|tts)/i;
+
+  function parseProviderModels(provider, payload) {
+    const entries = Array.isArray(payload?.models) ? payload.models : Array.isArray(payload?.data) ? payload.data : [];
+    const models = entries.map((entry) => {
+      const rawId = String(entry?.id || entry?.name || "");
+      const id = provider === "gemini" ? rawId.replace(/^models\//, "") : rawId;
+      if (!core.normalizeModelId(id) || NON_TRANSCRIPTION_MODEL.test(id)) return "";
+      if (provider === "gemini") return entry?.supportedGenerationMethods?.includes("generateContent") && /^gemini-(?:[3-9]|[1-9][0-9])/.test(id) ? id : "";
+      if (provider === "groq") return /(?:whisper|speech|transcrib)/i.test(id) ? id : "";
+      if (provider === "openai") return /(?:whisper|transcrib)/i.test(id) ? id : "";
+      if (provider === "xai") return /(?:audio|speech|stt|transcrib|whisper)/i.test(id) ? id : "";
+      if (provider === "openrouter") {
+        const inputs = entry?.architecture?.input_modalities;
+        return ((Array.isArray(inputs) && inputs.includes("audio")) || /(?:audio|speech|transcrib|whisper)/i.test(id)) ? id : "";
+      }
+      return "";
+    });
+    return [...new Set(models.filter(Boolean))].sort().slice(0, 40);
+  }
+
+  async function discoverProviderModels({ provider, apiKey, fetchImpl = fetch, timeoutMs = 5000 }) {
+    const key = String(apiKey || "").trim();
+    if (!key) throw new Error("Enter an API key first.");
+    const config = {
+      gemini: { url: "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000", headers: { "x-goog-api-key": key } },
+      groq: { url: "https://api.groq.com/openai/v1/models", headers: { Authorization: `Bearer ${key}` } },
+      openai: { url: "https://api.openai.com/v1/models", headers: { Authorization: `Bearer ${key}` } },
+      openrouter: { url: "https://openrouter.ai/api/v1/models", headers: { Authorization: `Bearer ${key}` } },
+      xai: { url: "https://api.x.ai/v1/models", headers: { Authorization: `Bearer ${key}` } }
+    }[provider];
+    if (!config) return [];
+    const response = await fetchWithTimeout(config.url, { headers: config.headers }, fetchImpl, timeoutMs);
+    if (!response.ok) throw new ProviderRequestError(await readProviderError(response, `Model refresh failed (HTTP ${response.status}).`), response.status, core.isRetryableStatus(response.status));
+    return parseProviderModels(provider, await response.json());
+  }
+
   function getCaptureResults(session, requestId, now = Date.now()) {
     if (!session || session.requestId !== requestId || now > session.expiresAt) return [];
     return Array.isArray(session.urls) ? [...session.urls] : [];
@@ -625,9 +662,11 @@
     GeminiRequestError,
     ProviderRequestError,
     arrayBufferToBase64,
+    discoverProviderModels,
     fetchExternalAudio,
     getCaptureResults,
     requestTranscript,
+    parseProviderModels,
     testApiKey,
     testProviderApiKey,
     transcribeWithElevenLabs,
