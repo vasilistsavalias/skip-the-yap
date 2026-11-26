@@ -1,6 +1,6 @@
 {
   "name": "skip-the-yap-extension",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "private": true,
   "description": "Turn Messenger and Instagram voice notes into readable transcripts or quick summaries.",
   "license": "GPL-3.0-only",
