@@ -368,6 +368,26 @@
     state.classList.toggle("configured", Boolean(value));
   }
 
+  function applyDiscoveredModels(provider, result) {
+    if (!result?.success || !Array.isArray(result.models) || !result.models.length) return false;
+    const customEnabled = (providerModels[provider] || []).filter(
+      (model) => !core.PROVIDER_MODELS[provider].includes(model) && !result.models.includes(model)
+    );
+    providerCatalogs[provider] = normalizeProviderCatalogs({ [provider]: [...result.models, ...customEnabled] })[provider];
+    providerModels[provider] = core.buildProviderModelOrder(provider, providerModels[provider], providerCatalogs[provider]);
+    return true;
+  }
+
+  async function runProviderConnectionTest(provider, apiKey) {
+    await requestProviderPermission(provider);
+    await chrome.storage.local.set({ [providerInfo[provider].key]: apiKey });
+    const result = await chrome.runtime.sendMessage({ action: "TEST_API_KEY", provider, apiKey });
+    if (applyDiscoveredModels(provider, result)) {
+      await save({ providerCatalogs, providerModels });
+    }
+    return result;
+  }
+
   async function testFallbackProvider(provider, button) {
     const input = button.closest(".fallback-key-row").querySelector("input");
     const apiKey = input.value.trim();
@@ -375,14 +395,8 @@
     button.disabled = true;
     button.textContent = "Testing…";
     try {
-      await requestProviderPermission(provider);
-      await chrome.storage.local.set({ [providerInfo[provider].key]: apiKey });
-      const result = await chrome.runtime.sendMessage({ action: "TEST_API_KEY", provider, apiKey });
-      if (result?.success && Array.isArray(result.models)) {
-        providerCatalogs[provider] = normalizeProviderCatalogs({ [provider]: result.models })[provider];
-        providerModels[provider] = core.buildProviderModelOrder(provider, providerModels[provider], providerCatalogs[provider]);
-        await save({ providerCatalogs, providerModels }); renderRouting();
-      }
+      const result = await runProviderConnectionTest(provider, apiKey);
+      if (result?.success) renderRouting();
       connectionStates[provider] = { type: result?.success ? "valid" : "invalid", message: result?.success ? "Connected" : result?.error || "Connection failed" };
       button.textContent = result?.success ? "Connected ✓" : "Failed";
     } catch (error) {
@@ -419,14 +433,7 @@
     connectionStates[provider] = { type: "checking", message: "Testing connection…" };
     renderStatus();
     try {
-      await requestProviderPermission(provider);
-      await chrome.storage.local.set({ [providerInfo[provider].key]: value });
-      const result = await chrome.runtime.sendMessage({ action: "TEST_API_KEY", provider, apiKey: value });
-      if (result?.success && Array.isArray(result.models)) {
-        providerCatalogs[provider] = normalizeProviderCatalogs({ [provider]: result.models })[provider];
-        providerModels[provider] = core.buildProviderModelOrder(provider, providerModels[provider], providerCatalogs[provider]);
-        await save({ providerCatalogs, providerModels });
-      }
+      const result = await runProviderConnectionTest(provider, value);
       const count = providerCatalogs[provider]?.length || 0;
       connectionStates[provider] = { type: result?.success ? "valid" : "invalid", message: result?.success ? count ? `Connected · ${count} compatible models found` : "Connected · using tested models" : result?.error || "Connection failed" };
     } catch (error) {

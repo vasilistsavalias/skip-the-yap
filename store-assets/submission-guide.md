@@ -1,11 +1,11 @@
 # Chrome Web Store update guide
 
-Use the canonical ZIP attached to the GitHub `v1.0.4` release. Do not rebuild it.
+Use the canonical ZIP attached to the GitHub `v1.0.5` release. Do not rebuild it.
 
 ## Package
 
 - Existing item ID: `pemnjegaecboifkcglcglokdinegfidf`
-- Upload: `skip-the-yap-1.0.4.zip`
+- Upload: `skip-the-yap-1.0.5.zip`
 
 ## Store listing
 
@@ -25,7 +25,7 @@ Replace the detailed description with the complete content under **Detailed desc
 - Small promotional tile: `store-assets/promo-small.png`
 - Marquee promotional image: `store-assets/promo-marquee.png`
 
-The images already match the v1.0.4 interface; re-uploading them is optional if the Dashboard already contains these exact assets.
+The images already match the v1.0.5 interface; re-uploading them is optional if the Dashboard already contains these exact assets.
 
 ## Privacy
 
@@ -35,8 +35,8 @@ The images already match the v1.0.4 interface; re-uploading them is optional if 
 
 ## Reviewer note
 
-This update prevents delayed Messenger composer reconciliation from inserting the same transcript twice. It also collapses only exact full-output provider repetition. Provider configuration, permissions, and data handling are unchanged.
+This update prioritizes fast free-tier-compatible Gemini Flash models with low/minimal thinking configuration, improves provider model discovery, and preserves custom model entries. Provider configuration, permissions, and data handling are unchanged.
 
 ## Submit
 
-Upload the ZIP, save the compliant listing text, verify Privacy and Distribution, and submit the update for review. Existing users update automatically only after Google approves and publishes v1.0.4.
+Upload the ZIP, save the compliant listing text, verify Privacy and Distribution, and submit the update for review. Existing users update automatically only after Google approves and publishes v1.0.5.

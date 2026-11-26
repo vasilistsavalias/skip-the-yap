@@ -42,18 +42,29 @@ test("canonicalizes supported aliases and corrects recognizable container metada
 
 test("model routing accepts only supported configured models", () => {
   assert.deepEqual(core.buildModelOrder("auto"), [...core.MODEL_CASCADE]);
-  assert.equal(core.buildModelOrder("gemini-3.5-transcribe")[0], "gemini-4-hydrogen");
+  assert.equal(core.buildModelOrder("gemini-3.5-transcribe")[0], "gemini-3.5-flash-lite");
   assert.deepEqual(core.buildModelOrder("attacker-controlled-model"), [...core.MODEL_CASCADE]);
   assert.deepEqual(core.MODEL_CASCADE, [
+    "gemini-3.5-flash-lite",
+    "gemini-3.7-flash",
+    "gemini-3.8-flash",
+    "gemini-3.1-flash-lite",
+    "gemini-3.6-flash",
+    "gemini-3.5-flash",
     "gemini-4-hydrogen",
     "gemini-4-neon",
     "gemini-4-carbon",
-    "gemini-4-argon",
-    "gemini-3.8-flash",
-    "gemini-3.5-flash",
-    "gemini-3.5-flash-lite",
-    "gemini-3.1-flash-lite"
+    "gemini-4-argon"
   ]);
+});
+
+test("selects the lowest safe Gemini thinking level per model", () => {
+  assert.equal(core.getGeminiThinkingLevel("gemini-3.8-flash"), "low");
+  assert.equal(core.getGeminiThinkingLevel("gemini-3.5-flash-lite"), "minimal");
+  assert.equal(core.getGeminiThinkingLevel("gemini-3.1-flash-lite"), "minimal");
+  assert.equal(core.getGeminiThinkingLevel("gemini-4-hydrogen"), "low");
+  assert.equal(core.getGeminiThinkingLevel("gemini-3.5-transcribe"), null);
+  assert.equal(core.getGeminiThinkingLevel("gemini-2.5-flash"), null);
 });
 
 test("migrates the previous untouched Gemini cascade while preserving custom orders", () => {
@@ -61,7 +72,12 @@ test("migrates the previous untouched Gemini cascade while preserving custom ord
     "gemini-3.8-flash", "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-3.7-flash",
     "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"
   ];
+  const previousV105Defaults = [
+    "gemini-4-hydrogen", "gemini-4-neon", "gemini-4-carbon", "gemini-4-argon",
+    "gemini-3.8-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"
+  ];
   assert.deepEqual(core.buildProviderModelOrder("gemini", previousDefaults), [...core.MODEL_CASCADE]);
+  assert.deepEqual(core.buildProviderModelOrder("gemini", previousV105Defaults), [...core.MODEL_CASCADE]);
   assert.deepEqual(core.buildProviderModelOrder("gemini", ["gemini-3.8-flash", "gemini-3.5-flash-lite"]), ["gemini-3.8-flash", "gemini-3.5-flash-lite"]);
   assert.deepEqual(core.buildProviderModelOrder("gemini", ["gemini-5-hydrogen"], ["gemini-5-hydrogen"]), ["gemini-5-hydrogen"]);
   assert.deepEqual(core.buildProviderModelOrder("gemini", ["https://evil.example/model"], ["https://evil.example/model"]), [...core.MODEL_CASCADE]);

@@ -2,19 +2,26 @@
 
 All notable user-visible changes are documented here.
 
-## [1.0.5] - 2026-11-24
+## [1.0.5] - 2026-11-26
 
 ### Added
 
 - Compatible model discovery from provider-owned model endpoints during connection testing.
 - Exact custom model IDs in Advanced fallback for newly released compatible models.
-- Gemini 4 Hydrogen, Neon, Carbon, and Argon support.
+- Gemini 4 Hydrogen, Neon, Carbon, and Argon fallback support.
 
 ### Changed
 
-- Made Gemini 4 Hydrogen the default transcription model.
+- Led the default Gemini cascade with fast, free-tier-compatible `gemini-3.5-flash-lite` and `gemini-3.7-flash` models while keeping `gemini-3.8-flash` and Gemini 4 models available as fallbacks.
+- Configured low/minimal `thinkingLevel` for Gemini 3 and Gemini 4 transcription and connection-test requests to eliminate multi-second default reasoning delays.
 - Removed deprecated and approaching-retirement Gemini models from the built-in cascade.
 - Migrated untouched previous defaults while preserving user-customized model orders.
+- Reduced the post-discovery network capture wait in the content script and scaled Gemini model timeouts for larger audio notes.
+
+### Fixed
+
+- Preserved manually added and previously discovered models when a provider connection test fails discovery or runs on a provider without a model-list endpoint.
+- Raised the enabled model limit in provider routing so custom model additions are not dropped when 12 models are already enabled.
 
 ## [1.0.4] - 2026-11-11
 

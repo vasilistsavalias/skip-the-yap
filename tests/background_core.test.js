@@ -23,15 +23,48 @@ test("does not send a transcription without a user API key", async () => {
 test("sends the API key in a header and returns transcript text", async () => {
   let requestedUrl;
   let requestedHeaders;
+  let requestedBody;
   const fetchImpl = async (url, options) => {
     requestedUrl = url;
     requestedHeaders = options.headers;
+    requestedBody = JSON.parse(options.body);
     return jsonResponse(200, { candidates: [{ content: { parts: [{ text: "hello" }] } }] });
   };
   const result = await backgroundCore.transcribeAudio({ base64Data: audio, mimeType: "audio/wav", settings }, { fetchImpl });
   assert.equal(result.text, "hello");
+  assert.equal(result.modelUsed, "gemini-3.5-flash-lite");
   assert.equal(requestedHeaders["x-goog-api-key"], settings.geminiApiKey);
   assert.equal(requestedUrl.includes(settings.geminiApiKey), false);
+  assert.equal(requestedBody.generationConfig?.thinkingConfig?.thinkingLevel, "minimal");
+});
+
+test("sends minimal thinkingLevel for flash-lite and omits thinkingConfig for transcribe models", async () => {
+  const bodies = {};
+  const fetchImpl = async (url, options) => {
+    const model = new URL(url).pathname.split("/").pop().split(":")[0];
+    bodies[model] = JSON.parse(options.body);
+    return jsonResponse(200, { candidates: [{ content: { parts: [{ text: "fast" }] } }] });
+  };
+  await backgroundCore.requestTranscript({
+    model: "gemini-3.5-flash-lite",
+    apiKey: settings.geminiApiKey,
+    base64Data: audio,
+    mimeType: "audio/wav",
+    prompt: "Transcribe.",
+    fetchImpl,
+    timeoutMs: 1000
+  });
+  await backgroundCore.requestTranscript({
+    model: "gemini-3.5-transcribe",
+    apiKey: settings.geminiApiKey,
+    base64Data: audio,
+    mimeType: "audio/wav",
+    prompt: "Transcribe.",
+    fetchImpl,
+    timeoutMs: 1000
+  });
+  assert.equal(bodies["gemini-3.5-flash-lite"].generationConfig?.thinkingConfig?.thinkingLevel, "minimal");
+  assert.equal("generationConfig" in bodies["gemini-3.5-transcribe"], false);
 });
 
 test("collapses an exact repeated transcript before delivery", async () => {

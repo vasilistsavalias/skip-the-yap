@@ -23,7 +23,7 @@ Testing a provider refreshes compatible models from its provider-owned catalog w
 
 | Provider | Configured models | Modes | Transport | Key test |
 |---|---|---|---|---|
-| Gemini | Ordered multimodal cascade led by `gemini-4-hydrogen` | Verbatim, Cleaned, TL;DR, custom | `generateContent` with inline base64 audio | Small text-only generation request |
+| Gemini | Ordered multimodal cascade led by `gemini-3.5-flash-lite` and `gemini-3.7-flash` (minimal/low thinking) | Verbatim, Cleaned, TL;DR, custom | `generateContent` with inline base64 audio | Small text-only generation request |
 | Groq | `whisper-large-v3-turbo`, `whisper-large-v3` | All modes; processed modes use a Groq text model | Multipart | Models endpoint |
 | Hugging Face | `openai/whisper-large-v3-turbo`, `openai/whisper-large-v3` | Verbatim | Raw bytes | Account identity endpoint |
 | OpenAI | `gpt-4o-mini-transcribe`, `gpt-4o-transcribe`, `whisper-1` | Verbatim | Multipart | Models endpoint |

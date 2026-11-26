@@ -260,12 +260,12 @@
       if (observedSource?.startsWith("blob:")) {
         await Promise.race([
           pageCapture.firstAudio,
-          new Promise((resolve) => setTimeout(resolve, 1800))
+          new Promise((resolve) => setTimeout(resolve, 1200))
         ]);
       } else if (observedSource) {
         await Promise.race([
           pageCapture.firstAudio,
-          new Promise((resolve) => setTimeout(resolve, 800))
+          new Promise((resolve) => setTimeout(resolve, 150))
         ]);
       }
       const captured = await sendMessage({ action: "GET_AUDIO_CAPTURE", requestId });

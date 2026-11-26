@@ -120,7 +120,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           const models = await backgroundCore.discoverProviderModels({ provider: request.provider || "gemini", apiKey: String(request.apiKey || "").trim(), fetchImpl: fetch });
           sendResponse({ success: true, models });
         } catch (error) {
-          sendResponse({ success: true, models: [], discoveryError: error.message });
+          sendResponse({ success: true, discoveryError: error.message });
         }
       })
       .catch((error) => sendResponse({ success: false, error: error.message }));

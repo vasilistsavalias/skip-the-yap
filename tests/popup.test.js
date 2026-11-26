@@ -125,6 +125,16 @@ test("provider testing stores discovered models and exact custom IDs", async () 
   custom.nextElementSibling.click();
   await new Promise((resolve) => setImmediate(resolve));
   assert.equal(Array.from(stored.providerModels.gemini).includes("gemini-5-custom"), true);
+
+  setConnectionResult({ success: true, discoveryError: "discovery unavailable" });
+  document.getElementById("testApiKeyBtn").click();
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(Array.from(stored.providerModels.gemini).includes("gemini-5-custom"), true);
+
+  setConnectionResult({ success: true, models: ["gemini-5-hydrogen"] });
+  document.getElementById("testApiKeyBtn").click();
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(Array.from(stored.providerModels.gemini).includes("gemini-5-custom"), true);
 });
 
 test("popup migrates old Auto routing and clears local data deliberately", async () => {

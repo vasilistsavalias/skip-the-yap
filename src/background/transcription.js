@@ -170,6 +170,15 @@
     }
   }
 
+  function buildGeminiRequestBody(parts, model) {
+    const body = { contents: [{ parts }] };
+    const thinkingLevel = core.getGeminiThinkingLevel(model);
+    if (thinkingLevel) {
+      body.generationConfig = { thinkingConfig: { thinkingLevel } };
+    }
+    return JSON.stringify(body);
+  }
+
   async function requestTranscript({ model, apiKey, base64Data, mimeType, prompt, fetchImpl, timeoutMs, signal }) {
     const controller = new AbortController();
     let timedOut = false;
@@ -189,14 +198,10 @@
             "Content-Type": "application/json",
             "x-goog-api-key": apiKey
           },
-          body: JSON.stringify({
-            contents: [{
-              parts: [
-                { inline_data: { mime_type: mimeType, data: base64Data } },
-                { text: prompt }
-              ]
-            }]
-          }),
+          body: buildGeminiRequestBody([
+            { inline_data: { mime_type: mimeType, data: base64Data } },
+            { text: prompt }
+          ], model),
           signal: controller.signal
         }
       );
@@ -258,7 +263,7 @@
           {
             method: "POST",
             headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-            body: JSON.stringify({ contents: [{ parts: [{ text: "Reply with OK." }] }] }),
+            body: buildGeminiRequestBody([{ text: "Reply with OK." }], model),
             signal: controller.signal
           }
         );
@@ -511,7 +516,7 @@
     const deadlineMs = options.deadlineMs || 45000;
     const passes = options.passes || 2;
     const deadline = now() + deadlineMs;
-    const modelTimeoutMs = 10000;
+    const modelTimeoutMs = options.modelTimeoutMs || (prepared.validatedAudio.bytes > 1024 * 1024 ? 20000 : 12000);
     let lastError;
     let attempts = 0;
 

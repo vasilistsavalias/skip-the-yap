@@ -11,14 +11,16 @@
   ]);
   const PROVIDERS = Object.freeze(["gemini", "groq", "huggingface", "openai", "xai", "elevenlabs", "openrouter"]);
   const MODEL_CASCADE = Object.freeze([
+    "gemini-3.5-flash-lite",
+    "gemini-3.7-flash",
+    "gemini-3.8-flash",
+    "gemini-3.1-flash-lite",
+    "gemini-3.6-flash",
+    "gemini-3.5-flash",
     "gemini-4-hydrogen",
     "gemini-4-neon",
     "gemini-4-carbon",
-    "gemini-4-argon",
-    "gemini-3.8-flash",
-    "gemini-3.5-flash",
-    "gemini-3.5-flash-lite",
-    "gemini-3.1-flash-lite"
+    "gemini-4-argon"
   ]);
   const PREVIOUS_GEMINI_MODEL_CASCADES = Object.freeze([
     Object.freeze([
@@ -27,6 +29,16 @@
       "gemini-2.5-flash-lite",
       "gemini-3.7-flash",
       "gemini-3.6-flash",
+      "gemini-3.5-flash",
+      "gemini-3.5-flash-lite",
+      "gemini-3.1-flash-lite"
+    ]),
+    Object.freeze([
+      "gemini-4-hydrogen",
+      "gemini-4-neon",
+      "gemini-4-carbon",
+      "gemini-4-argon",
+      "gemini-3.8-flash",
       "gemini-3.5-flash",
       "gemini-3.5-flash-lite",
       "gemini-3.1-flash-lite"
@@ -180,6 +192,14 @@
     return model;
   }
 
+  function getGeminiThinkingLevel(model) {
+    const id = normalizeModelId(model).toLowerCase();
+    if (!/^gemini-(?:[3-9]|[1-9]\d)/.test(id)) return null;
+    if (/(?:^|-)(?:transcribe|live|tts|image|embedding|robotics|decision)(?:-|$)/.test(id)) return null;
+    if (/^gemini-3(?:\.\d+)?-flash-lite(?:$|-)/.test(id) || /^gemini-3\.6-flash(?:$|-)/.test(id)) return "minimal";
+    return "low";
+  }
+
   function buildProviderModelOrder(provider, configuredModels, discoveredModels = []) {
     const normalizedProvider = normalizeProvider(provider);
     const defaults = PROVIDER_MODELS[normalizedProvider] || [];
@@ -189,7 +209,7 @@
       return [...defaults];
     }
     const available = new Set([...defaults, ...(Array.isArray(discoveredModels) ? discoveredModels.map(normalizeModelId).filter(Boolean) : [])]);
-    const selected = configuredModels.map(normalizeModelId).filter((model, index, values) => available.has(model) && values.indexOf(model) === index).slice(0, 12);
+    const selected = configuredModels.map(normalizeModelId).filter((model, index, values) => available.has(model) && values.indexOf(model) === index).slice(0, 20);
     return selected.length ? selected : [...defaults];
   }
 
@@ -250,6 +270,7 @@
     createRequestId,
     detectAudioMimeType,
     estimateBase64Bytes,
+    getGeminiThinkingLevel,
     getPrompt,
     isAllowedMediaUrl,
     isMediaCdnUrl,
